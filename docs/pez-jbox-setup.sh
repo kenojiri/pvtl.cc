@@ -148,7 +148,7 @@ eval "\$(direnv hook bash)"
 EOT
 
 mkdir -p ${HOME}/workspace/scripts
-cat <<EOT >> ${HOME}/workspace/.envrc.tmpl
+cat <<EOT > ${HOME}/workspace/.envrc.tmpl
 ### credentials for shared S3 compatible storage in PEZ
 ### see... https://pez-portal.int-apps.pcfone.io/user/content?id=7
 export S3_ENDPOINT="s3.pez.pivotal.io"
@@ -176,26 +176,36 @@ export BOSH_ALL_PROXY="ssh+socks5://ubuntu@\${OM_HOSTNAME}:22?private-key=\${HOM
 export PIVNET_TOKEN="***CHANGEMECHANGEME***"
 pivnet login --api-token=\${PIVNET_TOKEN}
 
+### TKGI settings
 export TKGI_VERSION="1.8.1"
+export TKGI_API_HOST="api.run.\${ENV_NAME}.\${DOMAIN_NAME}"
 EOT
 
-cat <<EOT >> ${HOME}/workspace/scripts/tkgi-login.sh
+cat <<EOT > ${HOME}/workspace/scripts/tkgi-login.sh
 #!/bin/bash
+
+### make temporary directory ###
+TMPDIR=/tmp/\$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+mkdir -p \${TMPDIR}
+
+set -exo pipefail
+
 TKGI_VERSION=\${TKGI_VERSION:-"1.8.1"}
 if [ ! -f /usr/local/bin/tkgi ]; then
   TKGI_CLI_FILEID=\$(pivnet product-files --product-slug='pivotal-container-service' --release-version=\$TKGI_VERSION --format json | jq '.[] | select(.name == "TKGI CLI - Linux") | .id')
   PKS_CLI_FILEID=\$(pivnet product-files --product-slug='pivotal-container-service' --release-version=\$TKGI_VERSION --format json | jq '.[] | select(.name == "PKS CLI - Linux") | .id')
-  KUBECTL_CLI_FILEID=\$(pivnet product-files --product-slug='pivotal-container-service' --release-version=\$TKGI_VERSION --format json | jq '.[] | select(.name == "Kubectl CLI - Linux") | .id')
+  KUBECTL_CLI_FILEID=\$(pivnet product-files --product-slug='pivotal-container-service' --release-version=\$TKGI_VERSION --format json | jq '.[] | select(.name | startswith("Kubectl")) | select(.name | endswith("Linux")) | .id')
    
-  pushd /work/Download
+  pushd \${TMPDIR}
     pivnet download-product-files --product-slug='pivotal-container-service' --release-version=\$TKGI_VERSION --product-file-id=\$TKGI_CLI_FILEID
     pivnet download-product-files --product-slug='pivotal-container-service' --release-version=\$TKGI_VERSION --product-file-id=\$PKS_CLI_FILEID
     pivnet download-product-files --product-slug='pivotal-container-service' --release-version=\$TKGI_VERSION --product-file-id=\$KUBECTL_CLI_FILEID
-    sudo install -m 755 tkgi-linux-amd64-\$TKGI_VERSION-* /usr/local/bin/tkgi
-    sudo install -m 755 pks-linux-amd64-\$TKGI_VERSION-* /usr/local/bin/pks
+    sudo install -m 755 tkgi-linux-amd64-* /usr/local/bin/tkgi
+    sudo install -m 755 pks-linux-amd64-* /usr/local/bin/pks
     sudo install -m 755 kubectl-linux-amd64-* /usr/local/bin/kubectl
   popd
 fi
+rm -rf \${TMPDIR}
  
 TKGI_API_HOST=\${TKGI_API_HOST:-"api.run.\${ENV_NAME}.\${DOMAIN_NAME}"}
 TKGI_ADMIN_PASSWORD=\$(om credentials -p pivotal-container-service -c .properties.uaa_admin_password -f secret)
