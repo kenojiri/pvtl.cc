@@ -137,6 +137,14 @@ sudo install -m 755 ${TMPDIR}/yj /usr/local/bin/yj
 curl -vL https://dl.minio.io/client/mc/release/linux-amd64/mc -o ${TMPDIR}/mc
 sudo install -m 755 ${TMPDIR}/mc /usr/local/bin/mc
 
+### Velero CLI ###
+VERSION=$(curl -s https://api.github.com/repos/vmware-tanzu/velero/releases/latest | jq -r .tag_name)
+pushd ${TMPDIR}
+  curl -vL https://github.com/vmware-tanzu/velero/releases/download/${VERSION}/velero-${VERSION}-linux-amd64.tar.gz -o velero.tgz
+  tar zxvf velero.tgz
+  sudo install -m 755 velero-*/velero /usr/local/bin/velero
+popd
+
 ### remove temporary directory ###
 rm -rf ${TMPDIR}
 }
