@@ -89,7 +89,7 @@ popd
 VERSION=$(curl -s https://api.github.com/repos/hashicorp/terraform/releases/latest | jq -r .tag_name | sed 's/v//')
 curl -vL https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_linux_amd64.zip -o ${TMPDIR}/terraform.zip
 cd /usr/local/bin
-sudo unzip -f ${TMPDIR}/terraform.zip
+sudo unzip -u ${TMPDIR}/terraform.zip
 
 ### Kubernetes CLI (kubectl) ###
 VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)
