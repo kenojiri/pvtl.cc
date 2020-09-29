@@ -6,26 +6,70 @@ if test -z "$BASH_VERSION"; then
 fi
 
 install() {
+  ### make temporary directory ###
+  TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+  mkdir -p ${TMPDIR}
+
   set -euxo pipefail
 
   ### SSH via key ###
-  if [ ! -f $HOME/.ssh/authorized_keys ]; then
+  if [ ! -f $HOME/.ssh/authorized_keys ] || ! grep -q ssh-import-id $HOME/.ssh/authorized_keys ; then
     github_id="${GITHUB_ID:-kenojiri}"
     echo "Installing SSH public key..."
     ssh-import-id-gh $github_id
   fi
 
-  ### mosh ###
+  ### mosh, jq, direnv, OpenVPN, groff, netcat, bash-completion ###
   if [ ! -f /usr/bin/mosh ]; then
-    echo "Installing mosh..."
+    echo "Installing APT packages..."
     sudo apt-get update
-    sudo apt-get install -y mosh
+    sudo apt-get install -y mosh jq direnv openvpn groff netcat-openbsd bash-completion
   fi
 
-  ### OpenVPN ###
-  if [ ! -f /usr/sbin/openvpn ]; then
-    echo "Installing OpenVPN client..."
-    sudo apt-get install -y openvpn
+  ### govc ###
+  VERSION=$(curl -s https://api.github.com/repos/vmware/govmomi/releases/latest | jq -r .tag_name)
+  pushd ${TMPDIR}
+    curl -LO https://github.com/vmware/govmomi/releases/download/v0.23.0/govc_linux_amd64.gz
+    gunzip govc_linux_amd64.gz
+    sudo install -m 755 ./govc_linux_amd64 /usr/local/bin/govc
+  popd
+
+  ### mc ###
+  curl -LO https://dl.minio.io/client/mc/release/linux-amd64/mc -o ${TMPDIR}/mc
+  sudo install -m 755 ${TMPDIR}/mc /usr/local/bin/mc
+
+  ### kubectl ###
+  curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl -o ${TMPDIR}/kubectl
+  sudo install -m 755 ${TMPDIR}/kubectl /usr/local/bin/
+
+  ### Helm 3 ###
+  VERSION=$(curl -s https://api.github.com/repos/helm/helm/releases/latest | jq -r .tag_name)
+  pushd ${TMPDIR}
+    curl -vL https://get.helm.sh/helm-${VERSION}-linux-amd64.tar.gz -o helm.tgz
+    tar zxvf helm.tgz linux-amd64/
+    sudo install -m 755 linux-amd64/helm /usr/local/bin/helm3
+  popd
+
+  ### Velero CLI ###
+  VERSION=$(curl -s https://api.github.com/repos/vmware-tanzu/velero/releases/latest | jq -r .tag_name)
+  pushd ${TMPDIR}
+    curl -vL https://github.com/vmware-tanzu/velero/releases/download/${VERSION}/velero-${VERSION}-linux-amd64.tar.gz -o velero.tgz
+    tar zxvf velero.tgz
+    sudo install -m 755 velero-*/velero /usr/local/bin/velero
+  popd
+
+  ### remove temporary directory ###
+  rm -rf ${TMPDIR}
+}
+
+setup_homedir() {
+  ### bash ###
+  if [ ! -f $HOME/.bash_profile ] || ! grep -q kubectl $HOME/.bash_profile ; then
+    echo "Setting .bash_profile..."
+    cat <<EOT >> ${HOME}/.bash_profile
+eval "\$(kubectl completion bash)"
+eval "\$(direnv hook bash)"
+EOT
   fi
 
   ### tmux ###
@@ -78,4 +122,21 @@ EOF
   fi
 }
 
+conclusion() {
+cat <<EOT
+
+########### setup completed ##########
+
+you may do steps below:
+
+1. enable direnv and kubectl bash-completion
+=====
+source ~/.bash_profile
+=====
+
+EOT
+}
+
 install
+setup_homedir
+conclusion
