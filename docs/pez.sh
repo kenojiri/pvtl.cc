@@ -35,12 +35,16 @@ install() {
   popd
 
   ### mc ###
-  curl -LO https://dl.minio.io/client/mc/release/linux-amd64/mc -o ${TMPDIR}/mc
-  sudo install -m 755 ${TMPDIR}/mc /usr/local/bin/mc
+  pushd ${TMPDIR}
+    curl -LO https://dl.minio.io/client/mc/release/linux-amd64/mc -o ./mc
+    sudo install -m 755 ./mc /usr/local/bin/
+  popd
 
   ### kubectl ###
-  curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl -o ${TMPDIR}/kubectl
-  sudo install -m 755 ${TMPDIR}/kubectl /usr/local/bin/
+  pushd ${TMPDIR}
+    curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl -o .//kubectl
+    sudo install -m 755 ./kubectl /usr/local/bin/
+  popd
 
   ### Helm 3 ###
   VERSION=$(curl -s https://api.github.com/repos/helm/helm/releases/latest | jq -r .tag_name)
