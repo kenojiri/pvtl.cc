@@ -51,7 +51,7 @@ install() {
   pushd ${TMPDIR}
     curl -vL https://get.helm.sh/helm-${VERSION}-linux-amd64.tar.gz -o helm.tgz
     tar zxvf helm.tgz linux-amd64/
-    sudo install -m 755 linux-amd64/helm /usr/local/bin/helm3
+    sudo install -m 755 linux-amd64/helm /usr/local/bin/helm
   popd
 
   ### Velero CLI ###
