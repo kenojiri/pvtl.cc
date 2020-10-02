@@ -42,11 +42,11 @@ install() {
 
   ### kubectl ###
   pushd ${TMPDIR}
-    curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl -o .//kubectl
+    curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl -o ./kubectl
     sudo install -m 755 ./kubectl /usr/local/bin/
   popd
 
-  ### Helm 3 ###
+  ### Helm ###
   VERSION=$(curl -s https://api.github.com/repos/helm/helm/releases/latest | jq -r .tag_name)
   pushd ${TMPDIR}
     curl -vL https://get.helm.sh/helm-${VERSION}-linux-amd64.tar.gz -o helm.tgz
@@ -54,12 +54,19 @@ install() {
     sudo install -m 755 linux-amd64/helm /usr/local/bin/helm
   popd
 
-  ### Velero CLI ###
+  ### Velero ###
   VERSION=$(curl -s https://api.github.com/repos/vmware-tanzu/velero/releases/latest | jq -r .tag_name)
   pushd ${TMPDIR}
     curl -vL https://github.com/vmware-tanzu/velero/releases/download/${VERSION}/velero-${VERSION}-linux-amd64.tar.gz -o velero.tgz
     tar zxvf velero.tgz
     sudo install -m 755 velero-*/velero /usr/local/bin/velero
+  popd
+
+  ### VMware Tanzu Network CLI (pivnet) ###
+  VERSION=$(curl -s https://api.github.com/repos/pivotal-cf/pivnet-cli/releases/latest | jq -r .tag_name | sed 's/v//')
+  pushd ${TMPDIR}
+    curl -vL https://github.com/pivotal-cf/pivnet-cli/releases/download/v${VERSION}/pivnet-linux-amd64-${VERSION} -o ./pivnet
+    sudo install -m 755 ./pivnet /usr/local/bin/
   popd
 
   ### remove temporary directory ###
@@ -124,6 +131,30 @@ if-shell "which xsel" '\
 bind C-c new-window
 EOF
   fi
+
+  ### workspace directory ###
+  mkdir -p $HOME/workspace
+  cat <<EOF > $HOME/workspace/.envrc.template
+export ENV_NAME=haas-$(hostname | cut -d'-' -f 2)
+export GOVC_URL="vcsa-01.${ENV_NAME}.pez.vmware.com"
+#export GOVC_URL="vcsa-01.${ENV_NAME}.pez.pivotal.io"
+export GOVC_USERNAME='administrator@vsphere.local'
+export GOVC_PASSWORD='***CHANGEME***'
+export GOVC_DATACENTER='Datacenter'
+export GOVC_NETWORK='Extra'
+export GOVC_DATASTORE='LUN01'
+export GOVC_RESOURCE_POOL='/Datacenter/host/Cluster/Resources/tkg'
+export GOVC_INSECURE=1
+
+export S3_ACCESS_KEY_ID="pezusers"
+export S3_SECRET_ACCESS_KEY="***CHANGEME***"
+export S3_ENDPOINT="s3.pez.vmware.com"
+#export S3_ENDPOINT="s3.pez.pivotal.io"
+export S3_PIVNET_BUCKET="pipeline-factory"
+
+export PIVNET_TOKEN="***CHANGEME***"
+pivnet login --api-token=$PIVNET_TOKEN
+EOF
 }
 
 conclusion() {
