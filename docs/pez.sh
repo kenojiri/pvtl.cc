@@ -136,8 +136,8 @@ EOF
   mkdir -p $HOME/workspace
   cat <<EOF > $HOME/workspace/.envrc.template
 export ENV_NAME=haas-$(hostname | cut -d'-' -f 2)
-export GOVC_URL="vcsa-01.${ENV_NAME}.pez.vmware.com"
-#export GOVC_URL="vcsa-01.${ENV_NAME}.pez.pivotal.io"
+export GOVC_URL="vcsa-01.\${ENV_NAME}.pez.vmware.com"
+#export GOVC_URL="vcsa-01.\${ENV_NAME}.pez.pivotal.io"
 export GOVC_USERNAME='administrator@vsphere.local'
 export GOVC_PASSWORD='***CHANGEME***'
 export GOVC_DATACENTER='Datacenter'
