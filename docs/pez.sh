@@ -62,6 +62,16 @@ install() {
     sudo install -m 755 velero-*/velero /usr/local/bin/velero
   popd
 
+  ### k14s (ytt, kbld, kapp, imgpkg, vendir, kwt, and etc.) ###
+  curl -vL https://k14s.io/install.sh | sudo bash
+
+  ### yj ###
+  VERSION=$(curl -s https://api.github.com/repos/sclevine/yj/releases/latest | jq -r .tag_name) &&\
+  pushd ${TMPDIR}
+    curl -vL https://github.com/sclevine/yj/releases/download/${VERSION}/yj-linux -o ./yj &&\
+    sudo install -m 755 yj /usr/local/bin/
+  popd
+
   ### VMware Tanzu Network CLI (pivnet) ###
   VERSION=$(curl -s https://api.github.com/repos/pivotal-cf/pivnet-cli/releases/latest | jq -r .tag_name | sed 's/v//')
   pushd ${TMPDIR}
