@@ -153,7 +153,7 @@ export S3_ENDPOINT="s3.pez.vmware.com"
 export S3_PIVNET_BUCKET="pipeline-factory"
 
 export PIVNET_TOKEN="***CHANGEME***"
-pivnet login --api-token=$PIVNET_TOKEN
+pivnet login --api-token=\$PIVNET_TOKEN
 EOF
 }
 
