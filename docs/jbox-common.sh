@@ -7,7 +7,7 @@ fi
 
 common_install() {
   ### make temporary directory ###
-  TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+  TMPDIR=/var/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
 
   set -euxo pipefail
