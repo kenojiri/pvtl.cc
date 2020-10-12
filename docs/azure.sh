@@ -36,7 +36,8 @@ else
 fi
 
 ### read common functions ###
-TMPDIR=/var/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+mkdir -p ${TMPDIR}
 curl https://pvtl.cf/jbox-common.sh -o ${TMPDIR}/common.sh
 source ${TMPDIR}/common.sh
 rm -rf ${TMPDIR}
@@ -46,7 +47,7 @@ install() {
   common_install_docker
 
   ### make temporary directory ###
-  TMPDIR=/var/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+  TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
 
   set -euxo pipefail
