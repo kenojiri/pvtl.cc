@@ -37,7 +37,7 @@ fi
 
 ### read common functions ###
 TMPDIR=/var/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
-curl -s https://pvtl.cf/jbox-common.sh -o ${TMPDIR}/common.sh
+curl https://pvtl.cf/jbox-common.sh -o ${TMPDIR}/common.sh
 source ${TMPDIR}/common.sh
 rm -rf ${TMPDIR}
 
@@ -52,7 +52,7 @@ install() {
   set -euxo pipefail
 
   ### Azure CLI ###
-  apt-get update && apt-get install -y libssl-dev libffi-dev python3-dev build-essential
+  sudo apt-get update && sudo apt-get install -y libssl-dev libffi-dev python3-dev build-essential
   curl -L https://aka.ms/InstallAzureCli | bash
 
   ### remove temporary directory ###
