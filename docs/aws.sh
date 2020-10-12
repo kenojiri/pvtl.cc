@@ -50,8 +50,6 @@ install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
 
-  set -euxo pipefail
-
   ### AWS CLI ###
   pushd ${TMPDIR}
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"

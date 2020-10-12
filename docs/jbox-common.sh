@@ -10,8 +10,6 @@ common_install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
 
-  set -euxo pipefail
-
   ### SSH via key ###
   if [ ! -f $HOME/.ssh/authorized_keys ] || ! grep -q ssh-import-id $HOME/.ssh/authorized_keys ; then
     github_id="${GITHUB_ID:-kenojiri}"

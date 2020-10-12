@@ -19,8 +19,6 @@ install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
 
-  set -euxo pipefail
-
   ### deb packages - mosh, OpenVPN ###
   echo "Installing deb packages..."
   sudo apt-get update
