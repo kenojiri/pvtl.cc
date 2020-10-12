@@ -119,7 +119,7 @@ common_install() {
 common_install_docker() {
   curl -sSL https://get.docker.com/ | sudo sh
   sudo usermod -aG docker $(id -un)
-  apt-get install -y docker-compose
+  sudo apt-get install -y docker-compose
 }
 
 common_setup_homedir() {
