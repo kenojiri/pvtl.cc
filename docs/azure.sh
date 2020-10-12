@@ -50,8 +50,6 @@ install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
 
-  set -euxo pipefail
-
   ### Azure CLI ###
   sudo apt-get update && sudo apt-get install -y libssl-dev libffi-dev python3-dev build-essential
   curl -L https://aka.ms/InstallAzureCli | bash
