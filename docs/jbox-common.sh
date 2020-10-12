@@ -82,7 +82,7 @@ common_install() {
   VERSION=$(curl -s https://api.github.com/repos/pivotal-cf/om/releases/latest | jq -r .tag_name)
   pushd ${TMPDIR}
     curl -vL https://github.com/pivotal-cf/om/releases/download/${VERSION}/om-linux-${VERSION} -o ./om
-    sudo install -m 755 /om /usr/local/bin/
+    sudo install -m 755 ./om /usr/local/bin/
   popd
 
   ### VMware Tanzu Network CLI (pivnet) ###
