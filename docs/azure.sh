@@ -71,11 +71,8 @@ setup_homedir() {
   ### workspace directory ###
   mkdir -p $HOME/workspace/scripts
   cat <<EOT > ${HOME}/workspace/.envrc.tmpl
-export S3_ACCESS_KEY_ID="***CHANGEMECHANGEME***"
-export S3_SECRET_ACCESS_KEY="***CHANGEMECHANGEME***"
-
 ### OpsManager credentials
-export ENV_NAME=aws
+export ENV_NAME=azr
 export MASTER_PASSWORD="***CHANGEMECHANGEME***"
 export DOMAIN_NAME=pvtl.cf
 export OM_HOSTNAME="om.\${ENV_NAME}.\${DOMAIN_NAME}"
