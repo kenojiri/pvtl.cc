@@ -32,6 +32,9 @@ install() {
     sudo install -m 755 ./govc_linux_amd64 /usr/local/bin/govc
   popd
 
+  ### TODO: My VMware CLI (vmw-cli) ###
+  # see: https://github.com/apnex/vmw-cli
+
   ### remove temporary directory ###
   rm -rf ${TMPDIR}
 }
@@ -49,25 +52,50 @@ setup_homedir() {
   ### workspace directory ###
   mkdir -p $HOME/workspace
   cat <<EOF > $HOME/workspace/.envrc.template
+export ENV_PASSWORD='***CHANGEME***'
 export ENV_NAME=haas-$(hostname | cut -d'-' -f 2)
 export GOVC_URL="vcsa-01.\${ENV_NAME}.pez.vmware.com"
-#export GOVC_URL="vcsa-01.\${ENV_NAME}.pez.pivotal.io"
 export GOVC_USERNAME='administrator@vsphere.local'
-export GOVC_PASSWORD='***CHANGEME***'
+export GOVC_PASSWORD=${ENV_PASSWORD}
 export GOVC_DATACENTER='Datacenter'
-export GOVC_NETWORK='Extra'
+export GOVC_NETWORK='VM Network'
 export GOVC_DATASTORE='LUN01'
-export GOVC_RESOURCE_POOL='/Datacenter/host/Cluster/Resources/tkg'
+export GOVC_RESOURCE_POOL='/Datacenter/host/Cluster'
 export GOVC_INSECURE=1
 
 export S3_ACCESS_KEY_ID="pezusers"
 export S3_SECRET_ACCESS_KEY="***CHANGEME***"
 export S3_ENDPOINT="s3.pez.vmware.com"
-#export S3_ENDPOINT="s3.pez.pivotal.io"
 export S3_PIVNET_BUCKET="pipeline-factory"
+
+export VMWUSER='***CHANGEME***'
+export VMWPASS='***CHANGEME***'
 
 export PIVNET_TOKEN="***CHANGEME***"
 pivnet login --api-token=\$PIVNET_TOKEN
+
+export OM_SSHKEY_FILEPATH='/tmp/opsman.pem'
+
+export TKGIMC_HOST='***CHANGEME***'
+export TKGIMC_PASSWORD=${ENV_PASSWORD}
+if [ -v TKGIMC_HOST ]; then
+  source ./scripts/env-tkgimc.sh
+fi
+EOF
+
+  mkdir -p $HOME/workspace/scripts
+  cat <<EOF > $HOME/workspace/scripts/env-tkgimc.sh
+export OM_HOSTNAME=\$(curl -sk -u "root:\${TKGIMC_PASSWORD}" https://\${TKGIMC_HOST}/api/deployment/environment | jq -r '.[] | select(.key == "network.opsman_reachable_ip") | .value')
+export OM_USERNAME=admin
+export OM_PASSWORD=\$(curl -sk -u "root:\${TKGIMC_PASSWORD}" https://\${TKGIMC_HOST}/api/deployment/environment | jq -r '.[] | select(.key == "opsman.admin_password") | .value')
+export OM_DECRYPTION_PASSPHRASE=\${OM_PASSWORD}
+export OM_TARGET="https://\${OM_HOSTNAME}"
+export OM_SKIP_SSL_VALIDATION="true"
+
+curl -sk -u "root:\${TKGIMC_PASSWORD}" https://\${TKGIMC_HOST}/api/deployment/environment | jq -r '.[] | select(.key == "opsman.ssh_private_key") | .value' > \${OM_SSHKEY_FILEPATH}
+chmod 600 \${OM_SSHKEY_FILEPATH}
+export BOSH_ALL_PROXY="ssh+socks5://ubuntu@\${OM_HOSTNAME}:22?private-key=\${OM_SSHKEY_FILEPATH}"
+eval "\$(om bosh-env)"
 EOF
 }
 
@@ -78,11 +106,24 @@ cat <<EOT
 
 you may do steps below:
 
-1. enable direnv and kubectl bash-completion
+1. create workspace/.envrc from template
 =====
-source ~/.bash_profile
+cp workspace/.envrc.template workspace/.envrc
+vim workspace/.envrc
 =====
 
+2. re-login via mosh and start tmux
+=====
+exit
+mosh ubuntu@ubuntu-???.haas-???.pez.vmware.com
+tmux
+=====
+
+3. go to workspace directory and allow .envrc
+=====
+cd workspace
+direnv allow
+=====
 EOT
 }
 

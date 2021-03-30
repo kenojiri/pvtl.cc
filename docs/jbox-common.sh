@@ -30,12 +30,6 @@ common_install() {
     sudo install -m 755 ./mc /usr/local/bin/
   popd
 
-  ### kubectl ###
-  pushd ${TMPDIR}
-    curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl -o ./kubectl
-    sudo install -m 755 ./kubectl /usr/local/bin/
-  popd
-
   ### Helm ###
   VERSION=$(curl -s https://api.github.com/repos/helm/helm/releases/latest | jq -r .tag_name)
   pushd ${TMPDIR}
