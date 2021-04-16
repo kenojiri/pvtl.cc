@@ -21,7 +21,7 @@ common_install() {
   echo "Installing deb packages..."
   sudo apt-get update
   sudo apt-get install -y \
-    tmux jq direnv unzip groff netcat-openbsd bash-completion \
+    tmux jq direnv unzip groff netcat-openbsd bash-completion sshpass \
     apt-transport-https gnupg software-properties-common
 
   ### minio CLI (mc) ###
