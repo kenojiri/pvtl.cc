@@ -32,8 +32,10 @@ install() {
     sudo install -m 755 ./govc_linux_amd64 /usr/local/bin/govc
   popd
 
-  ### TODO: My VMware CLI (vmw-cli) ###
+  ### My VMware CLI (vmw-cli) ###
   # see: https://github.com/apnex/vmw-cli
+  sudo docker run apnex/vmw-cli shell > ${TMPDIR}/vmw-cli
+  sudo install -m 755 ${TMPDIR}/vmw-cli /usr/local/bin/
 
   ### remove temporary directory ###
   rm -rf ${TMPDIR}
@@ -56,7 +58,7 @@ export ENV_PASSWORD='***CHANGEME***'
 export ENV_NAME=haas-$(hostname | cut -d'-' -f 2)
 export GOVC_URL="vcsa-01.\${ENV_NAME}.pez.vmware.com"
 export GOVC_USERNAME='administrator@vsphere.local'
-export GOVC_PASSWORD=${ENV_PASSWORD}
+export GOVC_PASSWORD=\${ENV_PASSWORD}
 export GOVC_DATACENTER='Datacenter'
 export GOVC_NETWORK='VM Network'
 export GOVC_DATASTORE='LUN01'
@@ -77,7 +79,7 @@ pivnet login --api-token=\$PIVNET_TOKEN
 export OM_SSHKEY_FILEPATH='/tmp/opsman.pem'
 
 export TKGIMC_HOST='***CHANGEME***'
-export TKGIMC_PASSWORD=${ENV_PASSWORD}
+export TKGIMC_PASSWORD=\${ENV_PASSWORD}
 if [ -v TKGIMC_HOST ]; then
   source ./scripts/env-tkgimc.sh
 fi
