@@ -19,10 +19,10 @@ install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
 
-  ### deb packages - mosh, OpenVPN ###
+  ### deb packages - mosh, OpenVPN, docker-compose ###
   echo "Installing deb packages..."
   sudo apt-get update
-  sudo apt-get install -y mosh openvpn
+  sudo apt-get install -y mosh openvpn docker-compose
 
   ### vCenter CLI (govc) ###
   VERSION=$(curl -s https://api.github.com/repos/vmware/govmomi/releases/latest | jq -r .tag_name)
