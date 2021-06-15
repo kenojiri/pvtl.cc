@@ -74,14 +74,24 @@ setup_homedir() {
   ### workspace directory ###
   mkdir -p $HOME/workspace/scripts
   cat <<EOT > ${HOME}/workspace/.envrc.tmpl
-export S3_ACCESS_KEY_ID="***CHANGEMECHANGEME***"
-export S3_SECRET_ACCESS_KEY="***CHANGEMECHANGEME***"
+### AWS credentials
+export AWS_ACCESS_KEY_ID="***CHANGEMECHANGEME***"
+export AWS_SECRET_ACCESS_KEY="***CHANGEMECHANGEME***"
+#tokyo#export AWS_DEFAULT_REGION="ap-northeast-1"
+#osaka#export AWS_DEFAULT_REGION="ap-northeast-3"
+#singapore#export AWS_DEFAULT_REGION="ap-southeast-1"
+export AWS_DEFAULT_REGION="ap-southeast-1"
+export AWS_IAM_USER_NAME="tanzu"
+export DNS_ZONE="pvtl.cf."
+
+export S3_ACCESS_KEY_ID=\${AWS_ACCESS_KEY_ID}
+export S3_SECRET_ACCESS_KEY=\${AWS_SECRET_ACCESS_KEY}
 
 ### OpsManager credentials
 export ENV_NAME=aws
 export MASTER_PASSWORD="***CHANGEMECHANGEME***"
-export DOMAIN_NAME=pvtl.cf
-export OM_HOSTNAME="om.\${ENV_NAME}.\${DOMAIN_NAME}"
+export DOMAIN_NAME=$(echo $DNS_ZONE | sed -e "s/.\$//")
+export OM_HOSTNAME="opsmanager.\${ENV_NAME}.\${DOMAIN_NAME}"
 export OM_USERNAME="admin"
 export OM_PASSWORD=\${MASTER_PASSWORD}
 export OM_DECRYPTION_PASSPHRASE=\${OM_PASSWORD}
@@ -89,12 +99,26 @@ export OM_TARGET="https://\${OM_HOSTNAME}"
 export OM_SKIP_SSL_VALIDATION="true"
 
 ### BOSH credentials
-eval "\$(om bosh-env)"
 export BOSH_ALL_PROXY="ssh+socks5://ubuntu@\${OM_HOSTNAME}:22?private-key=\${HOME}/workspace/.opsman_ssh_key"
+if [ \$(\$(nc -zw 1 \${OM_HOSTNAME} 443); echo \$?) -eq 0 ]; then
+  eval "\$(om bosh-env)"
+fi
 
 ### VMware Tanzu Network credentials
 export PIVNET_TOKEN="***CHANGEMECHANGEME***"
 pivnet login --api-token=\${PIVNET_TOKEN}
+
+### TKGI credentials
+if [ -v BOSH_CLIENT ]; then
+  if [ \$(om products --deployed -f json | grep pivotal-container-service | wc -l
+) -gt 0 ]; then
+    export PKS_USER_PASSWORD=\$(om credentials -p pivotal-container-service -c .p
+roperties.uaa_admin_password -f secret)
+    TKGI_API_HOST=\$(./2_terraforming.sh output-pks | om interpolate --path=/pks_
+api_dns)
+    tkgi login -a \${TKGI_API_HOST} -k -u admin -p \${PKS_USER_PASSWORD}
+  fi
+fi
 EOT
 
 cat <<EOT > ${HOME}/workspace/scripts/ssh-opsman.sh
