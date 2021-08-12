@@ -104,6 +104,12 @@ common_install() {
   cd /usr/local/bin
   sudo unzip -u ${TMPDIR}/terraform.zip
 
+  ### HashiCorp Vault ###
+  VERSION=$(curl -s https://api.github.com/repos/hashicorp/vault/releases/latest | jq -r .tag_name | sed 's/v//')
+  curl -vL https://releases.hashicorp.com/vault/${VERSION}/vault_${VERSION}_linux_amd64.zip -o ${TMPDIR}/vault.zip
+  cd /usr/local/bin
+  sudo unzip -u ${TMPDIR}/vault.zip
+
   ### remove temporary directory ###
   rm -rf ${TMPDIR}
 }
@@ -128,48 +134,36 @@ EOT
   if [ ! -f $HOME/.tmux.conf ]; then
     echo "Setting tmux..."
     cat <<EOF > $HOME/.tmux.conf
-set -g prefix C-z
-unbind C-b
-set -sg escape-time 1
-set -g base-index 1
-setw -g pane-base-index 1
-bind C-z send-prefix
-bind | split-window -h
-bind - split-window -v
-set -g default-terminal "screen-256color"
-set -g status-fg white
-set -g status-bg black
-setw -g window-status-fg cyan
-setw -g window-status-bg default
-setw -g window-status-attr dim
-setw -g window-status-current-fg white
-setw -g window-status-current-bg red
-setw -g window-status-current-attr bright
-set -g pane-border-fg green
-set -g pane-border-bg black
-set -g pane-active-border-fg white
-set -g pane-active-border-bg yellow
-set -g message-fg white
-set -g message-bg black
-set -g message-attr bright
-set -g status-left "#[fg=green]@#H "
+set-option -g default-terminal "xterm-256color"
+set-option -ga terminal-overrides ',*256color:Tc'
+
+set-option -sg escape-time 1
+set-option -g base-index 1
+
+set-option -g status-position bottom
+set-option -g status-style fg=black,bg=colour24
+set-option -g status-left '#[fg=cyan]#{?client_prefix,#[reverse],}#H #[default]'
 set-option -g status-left-length 15
-set -g status-right "#[fg=green] %m/%d(%a)%H:%M"
-set -g status-interval 60
-setw -g monitor-activity on
-set -g visual-activity on
-set -g status-style "bg=colour22"
-setw -g mode-keys vi
+set-option -g status-right '#[fg=cyan] [#S]'
+set-option -g renumber-windows on
+set-option -g window-status-style fg=black
+set-option -g window-status-current-style fg=white,bg=black,bright
+set-option -g message-style fg=white,bg=black,bright
+                                                                                
+set-option -g mode-keys vi
+set-option -g prefix C-z
+unbind C-b
+
 bind Space next-window
 bind h previous-window
-set-option -g renumber-windows on
+bind c new-window -c "#{pane_current_path}"
+bind C-c new-window -c "#{pane_current_path}"
 bind [ copy-mode
 bind ] paste-buffer
-if-shell "which xsel" '\
-  bind-key -t vi-copy y copy-pipe "xsel -ib"; \
-  bind-key -t vi-copy enter copy-pipe "xsel -ib"; \
-'
-bind C-c new-window
+                    
+bind -r w if "tmux display -p \"#{session_windows}\" | grep ^1\$ && tmux display -p \"#{window_panes}\" | grep ^1\$" \
+    "confirm-before -p \"Kill the only pane in the only window? It will kill this session too. (y/n)\" kill-pane" \
+        "kill-pane"
 EOF
   fi
 }
