@@ -58,7 +58,7 @@ export VMWPASS='***CHANGEME***'
 
 # see https://runway.eng.vmware.com/docs/#/components/platform/authentication?id=refreshing-token-with-api-token
 export RUNWAY_TOKEN="***CHANGEME***"
-runway login --auth \$RUNWAY_TOKEN
+runctl login --auth \$RUNWAY_TOKEN
 
 export PIVNET_TOKEN="***CHANGEME***"
 pivnet login --api-token=\$PIVNET_TOKEN
