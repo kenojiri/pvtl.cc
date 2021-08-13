@@ -17,16 +17,16 @@ rm -rf ${TMPDIR}
 install() {
 
   ### add sources.list ###
-  echo "deb https://build-artifactory.eng.vmware.com/artifactory/ubuntu-remote/ focal main restricted universe multiverse" > /etc/apt/sources.list.d/VMW-internal-mirror.list
+  sudo echo "deb https://build-artifactory.eng.vmware.com/artifactory/ubuntu-remote/ focal main restricted universe multiverse" > /etc/apt/sources.list.d/VMW-internal-mirror.list
 
   common_install
   vsphere_install
 
   wget "https://runway-ci.eng.vmware.com/api/v1/cli?arch=amd64&platform=linux" -O fly
-  install -m 755 ./fly /usr/local/bin/
+  sudo install -m 755 ./fly /usr/local/bin/
 
   wget "https://runway.eng.vmware.com/cli/2.0.0/linux/runctl" -O runctl
-  install -m 755 ./runctl /usr/local/bin/
+  sudo install -m 755 ./runctl /usr/local/bin/
 }
 
 setup_homedir() {
