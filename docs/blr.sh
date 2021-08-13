@@ -17,6 +17,7 @@ rm -rf ${TMPDIR}
 install() {
 
   ### add sources.list ###
+  echo "deb https://build-artifactory.eng.vmware.com/artifactory/ubuntu-remote/ focal main restricted universe multiverse" > /etc/apt/sources.list.d/VMW-internal-mirror.list
 
   common_install
   vsphere_install
