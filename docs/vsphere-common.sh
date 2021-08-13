@@ -31,7 +31,7 @@ vsphere_install() {
 
   ### My VMware CLI (vmw-cli) ###
   # see: https://github.com/apnex/vmw-cli
-  sudo docker run apnex/vmw-cli shell > ${TMPDIR}/vmw-cli
+  sudo docker run harbor-repo.vmware.com/dockerhub-proxy-cache/apnex/vmw-cli shell > ${TMPDIR}/vmw-cli
   sudo install -m 755 ${TMPDIR}/vmw-cli /usr/local/bin/
 
   ### remove temporary directory ###
