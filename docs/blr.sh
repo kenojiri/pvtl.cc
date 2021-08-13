@@ -17,7 +17,7 @@ rm -rf ${TMPDIR}
 install() {
 
   ### add sources.list ###
-  sudo echo "deb https://build-artifactory.eng.vmware.com/artifactory/ubuntu-remote/ focal main restricted universe multiverse" > /etc/apt/sources.list.d/VMW-internal-mirror.list
+  echo "deb https://build-artifactory.eng.vmware.com/artifactory/ubuntu-remote/ focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/VMW-internal-mirror.list
 
   common_install_docker
   common_install
