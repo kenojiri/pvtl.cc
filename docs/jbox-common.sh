@@ -5,6 +5,12 @@ if test -z "$BASH_VERSION"; then
   exit 1
 fi
 
+if test -z "$GITHUB_AUTH_CREDS"; then
+  export CURL=curl
+else
+  export CURL="curl -u ${GITHUB_AUTH_CREDS}"
+fi
+
 common_install() {
   ### make temporary directory ###
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
@@ -31,7 +37,7 @@ common_install() {
   popd
 
   ### Helm ###
-  VERSION=$(curl -s https://api.github.com/repos/helm/helm/releases/latest | jq -r .tag_name)
+  VERSION=$(${CURL} -s https://api.github.com/repos/helm/helm/releases/latest | jq -r .tag_name)
   pushd ${TMPDIR}
     curl -vL https://get.helm.sh/helm-${VERSION}-linux-amd64.tar.gz -o helm.tgz
     tar zxvf helm.tgz linux-amd64/
@@ -39,7 +45,7 @@ common_install() {
   popd
 
   ### Velero ###
-  VERSION=$(curl -s https://api.github.com/repos/vmware-tanzu/velero/releases/latest | jq -r .tag_name)
+  VERSION=$(${CURL} -s https://api.github.com/repos/vmware-tanzu/velero/releases/latest | jq -r .tag_name)
   pushd ${TMPDIR}
     curl -vL https://github.com/vmware-tanzu/velero/releases/download/${VERSION}/velero-${VERSION}-linux-amd64.tar.gz -o velero.tgz
     tar zxvf velero.tgz
@@ -50,7 +56,7 @@ common_install() {
   curl -vL https://k14s.io/install.sh | sudo bash
 
   ### yj ###
-  VERSION=$(curl -s https://api.github.com/repos/sclevine/yj/releases/latest | jq -r .tag_name) &&\
+  VERSION=$(${CURL} -s https://api.github.com/repos/sclevine/yj/releases/latest | jq -r .tag_name) &&\
   pushd ${TMPDIR}
     curl -vL https://github.com/sclevine/yj/releases/download/${VERSION}/yj-linux -o ./yj &&\
     sudo install -m 755 yj /usr/local/bin/
@@ -64,48 +70,48 @@ common_install() {
   sudo curl -vL https://raw.githubusercontent.com/cloudfoundry/cli/master/ci/installers/completion/cf -o /usr/share/bash-completion/completions/cf
 
   ### bosh ###
-  VERSION=$(curl -s https://api.github.com/repos/cloudfoundry/bosh-cli/releases/latest | jq -r .name | tr -d 'v')
+  VERSION=$(${CURL} -s https://api.github.com/repos/cloudfoundry/bosh-cli/releases/latest | jq -r .name | tr -d 'v')
   pushd ${TMPDIR}
     curl -vL https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${VERSION}-linux-amd64 -o ./bosh
     sudo install -m 755 ./bosh /usr/local/bin/
   popd
 
   ### Ops Manager CLI (om) ###
-  VERSION=$(curl -s https://api.github.com/repos/pivotal-cf/om/releases/latest | jq -r .tag_name)
+  VERSION=$(${CURL} -s https://api.github.com/repos/pivotal-cf/om/releases/latest | jq -r .tag_name)
   pushd ${TMPDIR}
     curl -vL https://github.com/pivotal-cf/om/releases/download/${VERSION}/om-linux-${VERSION} -o ./om
     sudo install -m 755 ./om /usr/local/bin/
   popd
 
   ### VMware Tanzu Network CLI (pivnet) ###
-  VERSION=$(curl -s https://api.github.com/repos/pivotal-cf/pivnet-cli/releases/latest | jq -r .tag_name | sed 's/v//')
+  VERSION=$(${CURL} -s https://api.github.com/repos/pivotal-cf/pivnet-cli/releases/latest | jq -r .tag_name | sed 's/v//')
   pushd ${TMPDIR}
     curl -vL https://github.com/pivotal-cf/pivnet-cli/releases/download/v${VERSION}/pivnet-linux-amd64-${VERSION} -o ./pivnet
     sudo install -m 755 ./pivnet /usr/local/bin/
   popd
 
   ### BOSH Backup and Restore CLI (bbr) ###
-  VERSION=$(curl -s https://api.github.com/repos/cloudfoundry-incubator/bosh-backup-and-restore/releases/latest | jq -r .tag_name | sed 's/v//')
+  VERSION=$(${CURL} -s https://api.github.com/repos/cloudfoundry-incubator/bosh-backup-and-restore/releases/latest | jq -r .tag_name | sed 's/v//')
   pushd ${TMPDIR}
     curl -vL https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/${VERSION}/bbr-${VERSION}-linux-amd64 -o ./bbr
     sudo install -m 755 ./bbr /usr/local/bin/
   popd
 
   ### CredHub CLI ###
-  VERSION=$(curl -s https://api.github.com/repos/cloudfoundry-incubator/credhub-cli/releases/latest | jq -r .tag_name)
+  VERSION=$(${CURL} -s https://api.github.com/repos/cloudfoundry-incubator/credhub-cli/releases/latest | jq -r .tag_name)
   pushd ${TMPDIR}
     curl -vL https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${VERSION}/credhub-linux-${VERSION}.tgz | tar zxvf -
     sudo install -m 755 ./credhub /usr/local/bin/
   popd
 
   ### HashiCorp Terraform ###
-  VERSION=$(curl -s https://api.github.com/repos/hashicorp/terraform/releases/latest | jq -r .tag_name | sed 's/v//')
+  VERSION=$(${CURL} -s https://api.github.com/repos/hashicorp/terraform/releases/latest | jq -r .tag_name | sed 's/v//')
   curl -vL https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_linux_amd64.zip -o ${TMPDIR}/terraform.zip
   cd /usr/local/bin
   sudo unzip -u ${TMPDIR}/terraform.zip
 
   ### HashiCorp Vault ###
-  VERSION=$(curl -s https://api.github.com/repos/hashicorp/vault/releases/latest | jq -r .tag_name | sed 's/v//')
+  VERSION=$(${CURL} -s https://api.github.com/repos/hashicorp/vault/releases/latest | jq -r .tag_name | sed 's/v//')
   curl -vL https://releases.hashicorp.com/vault/${VERSION}/vault_${VERSION}_linux_amd64.zip -o ${TMPDIR}/vault.zip
   cd /usr/local/bin
   sudo unzip -u ${TMPDIR}/vault.zip

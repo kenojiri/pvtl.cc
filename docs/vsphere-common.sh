@@ -5,6 +5,12 @@ if test -z "$BASH_VERSION"; then
   exit 1
 fi
 
+if test -z "$GITHUB_AUTH_CREDS"; then
+  export CURL=curl
+else
+  export CURL="curl -u ${GITHUB_AUTH_CREDS}"
+fi
+
 vsphere_install() {
   ### make temporary directory ###
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
@@ -16,7 +22,7 @@ vsphere_install() {
   sudo apt-get install -y mosh openvpn docker-compose
 
   ### vCenter CLI (govc) ###
-  VERSION=$(curl -s https://api.github.com/repos/vmware/govmomi/releases/latest | jq -r .tag_name)
+  VERSION=$(${CURL} -s https://api.github.com/repos/vmware/govmomi/releases/latest | jq -r .tag_name)
   pushd ${TMPDIR}
     curl -LO https://github.com/vmware/govmomi/releases/download/v0.23.0/govc_linux_amd64.gz
     gunzip govc_linux_amd64.gz

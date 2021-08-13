@@ -5,6 +5,12 @@ if test -z "$BASH_VERSION"; then
   exit 1
 fi
 
+if test -z "$GITHUB_AUTH_CREDS"; then
+  export CURL=curl
+else
+  export CURL="curl -u ${GITHUB_AUTH_CREDS}"
+fi
+
 ### read common functions ###
 TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
 mkdir -p ${TMPDIR}
