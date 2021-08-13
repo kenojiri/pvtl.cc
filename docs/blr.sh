@@ -19,13 +19,14 @@ install() {
   ### add sources.list ###
   sudo echo "deb https://build-artifactory.eng.vmware.com/artifactory/ubuntu-remote/ focal main restricted universe multiverse" > /etc/apt/sources.list.d/VMW-internal-mirror.list
 
+  common_install_docker
   common_install
   vsphere_install
 
-  wget "https://runway-ci.eng.vmware.com/api/v1/cli?arch=amd64&platform=linux" -O fly
+  sudo wget "https://runway-ci.eng.vmware.com/api/v1/cli?arch=amd64&platform=linux" -O fly
   sudo install -m 755 ./fly /usr/local/bin/
 
-  wget "https://runway.eng.vmware.com/cli/2.0.0/linux/runctl" -O runctl
+  sudo wget "https://runway.eng.vmware.com/cli/2.0.0/linux/runctl" -O runctl
   sudo install -m 755 ./runctl /usr/local/bin/
 }
 
