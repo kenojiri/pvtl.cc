@@ -27,6 +27,9 @@ install() {
 
   common_install_docker
   common_install
+
+  sudo apt install -y git ssh-import-id
+
   vsphere_install
 
   sudo wget "https://runway-ci.eng.vmware.com/api/v1/cli?arch=amd64&platform=linux" -O fly
@@ -42,17 +45,6 @@ setup_homedir() {
 
   ### workspace directory ###
   cat <<EOF > $HOME/workspace/.envrc.template
-export ENV_PASSWORD='***CHANGEME***'
-export ENV_NAME=blr
-export GOVC_URL="kitkat-vc.eng.vmware.com"
-export GOVC_USERNAME='administrator@kitkat-lab.local'
-export GOVC_PASSWORD=\${ENV_PASSWORD}
-export GOVC_DATACENTER='kitkat-lab vSAN Datacenter'
-export GOVC_NETWORK='vDS1 - DC Data Network VLAN1012'
-export GOVC_DATASTORE='vsanDatastore'
-export GOVC_RESOURCE_POOL='/kitkat-lab vSAN Datacenter/host/kitkat-lab vSAN Cluster'
-export GOVC_INSECURE=1
-
 export VMWUSER='***CHANGEME***'
 export VMWPASS='***CHANGEME***'
 
@@ -82,7 +74,7 @@ vim workspace/.envrc
 2. re-login via mosh and start tmux
 =====
 exit
-mosh ubuntu@blr.pvtl.cf
+mosh ***@nimbus.pvtl.cf
 tmux
 =====
 
