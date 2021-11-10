@@ -126,6 +126,13 @@ common_install_docker() {
   sudo apt-get install -y docker-compose
 }
 
+common_install_k3s_master() {
+  curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" sudo sh -
+  sudo chmod 755 /var/lib/rancher/k3s/server/cred
+  sudo chmod 755 /var/lib/rancher/k3s/server/tls
+  sudo chmod 644 /var/lib/rancher/k3s/server/tls/*
+}
+
 common_setup_homedir() {
   ### bash ###
   if [ ! -f $HOME/.bash_profile ] || ! grep -q kubectl $HOME/.bash_profile ; then
