@@ -36,6 +36,14 @@ common_install() {
     sudo install -m 755 ./mc /usr/local/bin/
   popd
 
+  ### lego ###
+  VERSION=$(${CURL} -s https://api.github.com/repos/go-acme/lego/releases/latest | jq -r .tag_name)
+  pushd ${TMPDIR}
+    curl -vL https://github.com/go-acme/lego/releases/download/${VERSION}/lego_${VERSION}_linux_amd64.tar.gz -o lego.tgz
+    tar zxvf lego.tgz
+    sudo install -m 755 lego /usr/local/bin/lego
+  popd
+
   ### Helm ###
   VERSION=$(${CURL} -s https://api.github.com/repos/helm/helm/releases/latest | jq -r .tag_name)
   pushd ${TMPDIR}
