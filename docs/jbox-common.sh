@@ -101,7 +101,7 @@ common_install() {
   ### BOSH Backup and Restore CLI (bbr) ###
   VERSION=$(${CURL} -s https://api.github.com/repos/cloudfoundry-incubator/bosh-backup-and-restore/releases/latest | jq -r .tag_name | sed 's/v//')
   pushd ${TMPDIR}
-    curl -vL https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/${VERSION}/bbr-${VERSION}-linux-amd64 -o ./bbr
+    curl -vL https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${VERSION}/bbr-${VERSION}-linux-amd64 -o ./bbr
     sudo install -m 755 ./bbr /usr/local/bin/
   popd
 
