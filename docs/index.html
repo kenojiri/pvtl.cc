@@ -44,16 +44,16 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
   <script src='https://cdn.jsdelivr.net/gh/rsms/markdown-wasm@v1.1.2/dist/markdown.js'></script>
   <script>
-    function parseScriptYAML(data) {
+    function parseScriptsMarkdown(data) {
       $("#scripts").text(markdown.parse(data));
     }
 
-    function parseDocumentsYAML(data) {
+    function parseDocumentsMarkdown(data) {
       $("#documents").text(markdown.parse(data));
     }
 
     $(function() {
-      $.get("scripts.md", parseScriptMarkdown);
+      $.get("scripts.md", parseScriptsMarkdown);
       $.get("documents.md", parseDocumentsMarkdown);
     });
 
