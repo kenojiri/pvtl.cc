@@ -52,13 +52,15 @@
       $("#documents").text(markdown.parse(data));
     }
 
-    $(function() {
-      $.get("scripts.md", parseScriptsMarkdown);
-      $.get("documents.md", parseDocumentsMarkdown);
-    });
+    //$(function() {
+    //  $.get("scripts.md", parseScriptsMarkdown);
+    //  $.get("documents.md", parseDocumentsMarkdown);
+    //});
 
     window.onload = async () => {
       await markdown.ready;
+      $.get("scripts.md", parseScriptsMarkdown);
+      $.get("documents.md", parseDocumentsMarkdown);
     };
   </script>
 </body>
