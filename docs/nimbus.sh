@@ -6,9 +6,10 @@ if test -z "$BASH_VERSION"; then
 fi
 
 if test -z "$GITHUB_AUTH_CREDS"; then
-  export CURL=curl
+  echo "Please run this script with GITHUB_AUTH_CREDS, such as 'curl -sL https://pvtl.cf/nimbus.sh | GITHUB_AUTH_CREDS=**** bash'" >&2
+  exit 1
 else
-  export CURL="curl -u ${GITHUB_AUTH_CREDS}"
+  CURL="curl -u ${GITHUB_AUTH_CREDS}"
 fi
 
 ### read common functions ###
@@ -31,7 +32,7 @@ install() {
   sudo apt install -y git ssh-import-id
 
   vsphere_install
-  vsphere_vmw_cli_install
+  #vsphere_vmw_cli_install
   vsphere_vmd_install
 
   sudo wget "https://runway-ci.eng.vmware.com/api/v1/cli?arch=amd64&platform=linux" -O fly
