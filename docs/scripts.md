@@ -1,0 +1,3 @@
+# scripts
+- aaa
+- bbb
