@@ -6,13 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
   <link rel="stylesheet" href="theme.css" type="text/css">
+  <link rel="icon" href="icons/favicon.ico">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 </head>
 
-<body class="">
+<body>
   <div class="section py-3 bg-primary">
     <div class="container">
       <div class="row">
-        <div class="col-12 col-md-12" style="">
+        <div class="col-12 col-md-12">
           <div class="row py-3">
             <div class="col-md-12 my-2">
               <h1 class="display-2 text-white my-3 text-center">pvtl.cf</h1>
@@ -30,8 +32,8 @@
           <p id="scripts">now loading...</p>
         </div>
         <div class="col-lg-6 py-1">
-          <p class="fa fa-4x fa-fw hub-square fa-book">docs</p>
-          <p id="docs">now loading...</p>
+          <p class="fa fa-4x fa-fw hub-square fa-sticky-note-o">memos</p>
+          <p id="memos">now loading...</p>
         </div>
       </div>
     </div>
@@ -46,14 +48,14 @@
       $("#scripts").html(markdown.parse(data));
     }
 
-    function parseDocsMarkdown(data) {
-      $("#docs").html(markdown.parse(data));
+    function parseMemosMarkdown(data) {
+      $("#memos").html(markdown.parse(data));
     }
 
     window.onload = async () => {
       await markdown.ready;
       $.get("scripts.md", parseScriptsMarkdown);
-      $.get("docs.md", parseDocsMarkdown);
+      $.get("memos.md", parseMemosMarkdown);
     };
   </script>
 </body>
