@@ -46,14 +46,14 @@
       $("#scripts").html(markdown.parse(data));
     }
 
-    function parseDocumentsMarkdown(data) {
-      $("#documents").html(markdown.parse(data));
+    function parseDocsMarkdown(data) {
+      $("#docs").html(markdown.parse(data));
     }
 
     window.onload = async () => {
       await markdown.ready;
       $.get("scripts.md", parseScriptsMarkdown);
-      $.get("documents.md", parseDocumentsMarkdown);
+      $.get("docs.md", parseDocsMarkdown);
     };
   </script>
 </body>
