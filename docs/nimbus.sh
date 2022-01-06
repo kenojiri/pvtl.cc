@@ -26,10 +26,11 @@ install() {
   ### add sources.list ###
   sudo sh -c 'echo "deb https://build-artifactory.eng.vmware.com/artifactory/ubuntu-remote/ focal main restricted universe multiverse" > /etc/apt/sources.list.d/VMW-internal-mirror.list'
 
+  sudo apt update
+  sudo apt install -y git ssh-import-id
+
   common_install
   common_install_k3s_master
-
-  sudo apt install -y git ssh-import-id
 
   vsphere_install
   #vsphere_vmw_cli_install
