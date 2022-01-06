@@ -45,17 +45,12 @@
   <script src='https://cdn.jsdelivr.net/gh/rsms/markdown-wasm@v1.2.0/dist/markdown.js'></script>
   <script>
     function parseScriptsMarkdown(data) {
-      $("#scripts").text(markdown.parse(data));
+      $("#scripts").innerHTML(markdown.parse(data));
     }
 
     function parseDocumentsMarkdown(data) {
-      $("#documents").text(markdown.parse(data));
+      $("#documents").innerHTML(markdown.parse(data));
     }
-
-    //$(function() {
-    //  $.get("scripts.md", parseScriptsMarkdown);
-    //  $.get("documents.md", parseDocumentsMarkdown);
-    //});
 
     window.onload = async () => {
       await markdown.ready;
