@@ -45,11 +45,11 @@
   <script src='https://cdn.jsdelivr.net/gh/rsms/markdown-wasm@v1.2.0/dist/markdown.js'></script>
   <script>
     function parseScriptsMarkdown(data) {
-      $("#scripts").innerHTML(markdown.parse(data));
+      $("#scripts").html(markdown.parse(data));
     }
 
     function parseDocumentsMarkdown(data) {
-      $("#documents").innerHTML(markdown.parse(data));
+      $("#documents").html(markdown.parse(data));
     }
 
     window.onload = async () => {
