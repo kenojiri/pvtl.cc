@@ -135,7 +135,7 @@ common_install_docker() {
 }
 
 common_install_k3s_master() {
-  curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" sudo sh -
+  curl -sfL https://get.k3s.io | sudo sh -s - --write-kubeconfig-mode 644
   sudo chmod 755 /var/lib/rancher/k3s/server/cred
   sudo chmod 755 /var/lib/rancher/k3s/server/tls
   sudo chmod 644 /var/lib/rancher/k3s/server/tls/*
