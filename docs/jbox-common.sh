@@ -191,7 +191,7 @@ common_ubuntu_release_upgrade() {
   source /etc/lsb-release
   if [ $DISTRIB_CODENAME = "xenial" -o $DISTRIB_CODENAME = "bionic" ]; then
     sudo apt-get update
-    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
+    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
     sudo do-release-upgrade -f DistUpgradeViewNonInteractive
     sudo reboot
   fi
