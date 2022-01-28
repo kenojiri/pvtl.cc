@@ -5,11 +5,17 @@ if test -z "$BASH_VERSION"; then
   exit 1
 fi
 
-if test -z "$GITHUB_AUTH_CREDS"; then
-  echo "Please run this script with GITHUB_AUTH_CREDS, such as 'curl -sL https://pvtl.cf/nimbus.sh | GITHUB_AUTH_CREDS=**** bash'" >&2
+if [ -z "$GITHUB_AUTH_CREDS" -o -z "$NEW_HOSTNAME" ] ; then
+  echo "Please run this script with GITHUB_AUTH_CREDS and NEW_HOSTNAME," >&2
+  echo "such as 'curl -sL https://pvtl.cf/nimbus.sh | GITHUB_AUTH_CREDS=**** NEW_HOSTNAME=nimbus?? bash'" >&2
   exit 1
 else
   CURL="curl -u ${GITHUB_AUTH_CREDS}"
+  echo ${NEW_HOSTNAME} | sudo tee /etc/hostname
+  cat << EOF | sudo tee /etc/hosts
+127.0.0.1       localhost
+127.0.1.1       ${NEW_HOSTNAME}
+EOF
 fi
 
 ### read common functions ###
