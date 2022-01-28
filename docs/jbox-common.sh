@@ -16,13 +16,6 @@ common_install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
 
-  ### SSH via key ###
-  if [ ! -f $HOME/.ssh/authorized_keys ] || ! grep -q ssh-import-id $HOME/.ssh/authorized_keys ; then
-    github_id="${GITHUB_ID:-kenojiri}"
-    echo "Installing SSH public key..."
-    ssh-import-id-gh $github_id
-  fi
-
   ### deb packages ###
   echo "Installing deb packages..."
   sudo apt-get update
@@ -188,3 +181,30 @@ bind -r w if "tmux display -p \"#{session_windows}\" | grep ^1\$ && tmux display
 EOF
   fi
 }
+
+common_ubuntu_release_upgrade() {
+  if [ ! -f /etc/lsb-release] ; then
+    echo "this VM is not Ubuntu"
+    exit 1
+  fi
+  source /etc/lsb-release
+  if [ $DISTRIB_CODENAME = "xenial" -o $DISTRIB_CODENAME = "bionic" ]; then
+    sudo apt update
+    sudo apt upgrade -y
+    sudo do-release-upgrade
+    sudo reboot
+  fi
+  sudo apt update
+  sudo apt autoremove -y
+}
+
+common_add_ssh_pubkey() {
+  if [ ! -f $HOME/.ssh/authorized_keys ] || ! grep -q ssh-import-id $HOME/.ssh/authorized_keys ; then
+    sudo apt update
+    sudo apt install -y git ssh-import-id
+    github_id="${GITHUB_ID:-kenojiri}"
+    echo "Installing SSH public key..."
+    ssh-import-id-gh $github_id
+  fi
+}
+

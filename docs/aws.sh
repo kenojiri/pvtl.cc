@@ -62,6 +62,7 @@ install() {
 }
 
 setup_homedir() {
+  common_add_ssh_pubkey
   common_setup_homedir
 
   ### SSH via key ###

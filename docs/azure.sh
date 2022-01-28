@@ -59,14 +59,8 @@ install() {
 }
 
 setup_homedir() {
+  common_add_ssh_pubkey
   common_setup_homedir
-
-  ### SSH via key ###
-  if [ ! -f $HOME/.ssh/authorized_keys ] || ! grep -q ssh-import-id $HOME/.ssh/authorized_keys ; then
-    github_id="${GITHUB_ID:-kenojiri}"
-    echo "Installing SSH public key..."
-    ssh-import-id-gh $github_id
-  fi
 
   ### workspace directory ###
   mkdir -p $HOME/workspace/scripts

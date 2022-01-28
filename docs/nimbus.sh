@@ -26,8 +26,9 @@ install() {
   ### add sources.list ###
   sudo sh -c 'echo "deb https://build-artifactory.eng.vmware.com/artifactory/ubuntu-remote/ focal main restricted universe multiverse" > /etc/apt/sources.list.d/VMW-internal-mirror.list'
 
-  sudo apt update
-  sudo apt install -y git ssh-import-id
+  common_add_ssh_pubkey
+
+  common_ubuntu_release_upgrade
 
   common_install
   common_install_k3s_master
@@ -37,10 +38,10 @@ install() {
   vsphere_vmd_install
 
   sudo wget "https://runway-ci.eng.vmware.com/api/v1/cli?arch=amd64&platform=linux" -O fly
-  sudo install -m 755 ./fly /usr/local/bin/
+  sudo install ./fly /usr/local/bin/
 
   sudo wget "https://runway.eng.vmware.com/cli/2.0.0/linux/runctl" -O runctl
-  sudo install -m 755 ./runctl /usr/local/bin/
+  sudo install ./runctl /usr/local/bin/
 }
 
 setup_homedir() {
@@ -51,8 +52,8 @@ setup_homedir() {
   cat <<EOF > $HOME/workspace/.envrc.template
 export VMWUSER='***CHANGEME***'
 export VMWPASS='***CHANGEME***'
-export VMD_USER=${VMWUSER}
-export VMD_PASS=${VMWPASS}
+export VMD_USER=\${VMWUSER}
+export VMD_PASS=\${VMWPASS}
 
 # see https://runway.eng.vmware.com/docs/#/components/platform/authentication?id=refreshing-token-with-api-token
 export RUNWAY_TOKEN="***CHANGEME***"

@@ -20,6 +20,7 @@ install() {
 }
 
 setup_homedir() {
+  common_add_ssh_pubkey
   common_setup_homedir
   vsphere_setup_homedir
 
