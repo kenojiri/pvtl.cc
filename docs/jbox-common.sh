@@ -19,7 +19,8 @@ common_install() {
   ### deb packages ###
   echo "Installing deb packages..."
   sudo apt-get update
-  sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes \
+  sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    -o Dpkg::Options::="--force-confnew" \
     tmux jq direnv unzip groff netcat-openbsd bash-completion sshpass \
     apt-transport-https gnupg software-properties-common"
 
@@ -189,9 +190,8 @@ common_ubuntu_release_upgrade() {
   fi
   source /etc/lsb-release
   if [ $DISTRIB_CODENAME = "xenial" -o $DISTRIB_CODENAME = "bionic" ]; then
-    sudo apt update
-    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get upgrade -y --force-yes"
-    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes update-manager-core"
+    sudo apt-get update
+    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -o Dpkg::Options::=\"--force-confnew\""
     sudo do-release-upgrade -f DistUpgradeViewNonInteractive
     sudo reboot
   fi
@@ -201,8 +201,8 @@ common_ubuntu_release_upgrade() {
 
 common_add_ssh_pubkey() {
   if [ ! -f $HOME/.ssh/authorized_keys ] || ! grep -q ssh-import-id $HOME/.ssh/authorized_keys ; then
-    sudo apt update
-    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes git ssh-import-id"
+    sudo apt-get update
+    sudo apt-get install -y git ssh-import-id
     github_id="${GITHUB_ID:-kenojiri}"
     echo "Installing SSH public key..."
     ssh-import-id-gh $github_id
