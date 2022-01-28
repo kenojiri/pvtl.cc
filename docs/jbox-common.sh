@@ -202,7 +202,7 @@ common_ubuntu_release_upgrade() {
 common_add_ssh_pubkey() {
   if [ ! -f $HOME/.ssh/authorized_keys ] || ! grep -q ssh-import-id $HOME/.ssh/authorized_keys ; then
     sudo apt-get update
-    sudo apt-get install -y git ssh-import-id
+    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes -o Dpkg::Options::=\"--force-confnew\" git ssh-import-id"
     github_id="${GITHUB_ID:-kenojiri}"
     echo "Installing SSH public key..."
     ssh-import-id-gh $github_id
