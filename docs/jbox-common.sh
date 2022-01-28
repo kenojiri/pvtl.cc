@@ -188,15 +188,14 @@ common_ubuntu_release_upgrade() {
     echo "this VM is not Ubuntu"
     exit 1
   fi
+  sudo apt-get update
+  sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
   source /etc/lsb-release
   if [ $DISTRIB_CODENAME = "xenial" -o $DISTRIB_CODENAME = "bionic" ]; then
-    sudo apt-get update
-    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
     sudo do-release-upgrade -f DistUpgradeViewNonInteractive
     sudo reboot
   fi
-  sudo apt update
-  sudo apt autoremove -y
+  sudo apt-get autoremove -y
 }
 
 common_add_ssh_pubkey() {
