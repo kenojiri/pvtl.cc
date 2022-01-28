@@ -7,10 +7,10 @@ fi
 
 if [ -z "$GITHUB_AUTH_CREDS" -o -z "$NEW_HOSTNAME" ] ; then
   echo "Please run this script with GITHUB_AUTH_CREDS and NEW_HOSTNAME," >&2
-  echo "such as 'curl -sL https://pvtl.cf/nimbus.sh | GITHUB_AUTH_CREDS=**** NEW_HOSTNAME=nimbus?? bash'" >&2
+  echo "such as 'curl -skL https://pvtl.cf/nimbus.sh | GITHUB_AUTH_CREDS=**** NEW_HOSTNAME=nimbus?? bash'" >&2
   exit 1
 else
-  CURL="curl -u ${GITHUB_AUTH_CREDS}"
+  CURL="curl -uk ${GITHUB_AUTH_CREDS}"
   echo ${NEW_HOSTNAME} | sudo tee /etc/hostname
   cat << EOF | sudo tee /etc/hosts
 127.0.0.1       localhost
@@ -21,9 +21,9 @@ fi
 ### read common functions ###
 TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
 mkdir -p ${TMPDIR}
-curl -s https://pvtl.cf/jbox-common.sh -o ${TMPDIR}/jbox-common.sh
+curl -sk https://pvtl.cf/jbox-common.sh -o ${TMPDIR}/jbox-common.sh
 source ${TMPDIR}/jbox-common.sh
-curl -s https://pvtl.cf/vsphere-common.sh -o ${TMPDIR}/vsphere-common.sh
+curl -sk https://pvtl.cf/vsphere-common.sh -o ${TMPDIR}/vsphere-common.sh
 source ${TMPDIR}/vsphere-common.sh
 rm -rf ${TMPDIR}
 
