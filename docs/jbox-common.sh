@@ -191,7 +191,7 @@ common_ubuntu_release_upgrade() {
   if [ $DISTRIB_CODENAME = "xenial" -o $DISTRIB_CODENAME = "bionic" ]; then
     sudo apt update
     sudo apt upgrade -y
-    sudo do-release-upgrade
+    sudo do-release-upgrade -f DistUpgradeViewNonInteractive
     sudo reboot
   fi
   sudo apt update
