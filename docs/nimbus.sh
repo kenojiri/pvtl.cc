@@ -31,9 +31,6 @@ rm -rf ${TMPDIR}
 
 install() {
 
-  ### add sources.list ###
-  sudo sh -c 'echo "deb https://build-artifactory.eng.vmware.com/artifactory/ubuntu-remote/ focal main restricted universe multiverse" > /etc/apt/sources.list.d/VMW-internal-mirror.list'
-
   ### delete sources.list ###
   if [ -f /etc/apt/sources.list.d/influxdb.list ] ; then
     ## delete entry: deb https://repos.influxdata.com/ubuntu xenial stable

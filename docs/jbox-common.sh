@@ -8,7 +8,7 @@ fi
 if test -z "$GITHUB_AUTH_CREDS"; then
   export CURL=curl
 else
-  export CURL="curl -u ${GITHUB_AUTH_CREDS}"
+  export CURL="curl -k -u ${GITHUB_AUTH_CREDS}"
 fi
 
 common_install() {
@@ -21,7 +21,7 @@ common_install() {
   sudo apt-get update
   sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y \
     -o Dpkg::Options::="--force-confnew" \
-    tmux jq direnv unzip groff netcat-openbsd bash-completion sshpass \
+    git tmux jq direnv unzip groff netcat-openbsd bash-completion sshpass \
     apt-transport-https gnupg software-properties-common"
 
   ### minio CLI (mc) ###
@@ -188,10 +188,13 @@ common_ubuntu_release_upgrade() {
     exit 1
   fi
   source /etc/lsb-release
-  sudo apt-get update
 
   # 16.04 (xenial)
   if [ $DISTRIB_CODENAME = "xenial" -o $(uname -r | awk -F- '{print $1}') = "4.4.0" ]; then
+    ### add sources.list ###
+    sudo sh -c 'echo "deb https://build-artifactory.eng.vmware.com/artifactory/ubuntu-remote/ xenial main restricted universe multiverse" > /etc/apt/sources.list.d/VMW-internal-mirror-xenial.list'
+
+    sudo apt-get update
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -f -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
@@ -202,8 +205,13 @@ common_ubuntu_release_upgrade() {
   fi
 
   # 18.04 (bionic)
-  ## TODO
   if [ $DISTRIB_CODENAME = "bionic" ]; then
+    ### add sources.list ###
+    if [ -f /etc/apt/sources.list.d/VMW-internal-mirror-xenial.list ]; then
+      sudo rm -f /etc/apt/sources.list.d/VMW-internal-mirror-xenial.list
+    fi
+    sudo sh -c 'echo "deb https://build-artifactory.eng.vmware.com/artifactory/ubuntu-remote/ bionic main restricted universe multiverse" > /etc/apt/sources.list.d/VMW-internal-mirror-bionic.list'
+
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes -o Dpkg::Options::=\"--force-confnew\" update-manager-core"
@@ -214,6 +222,16 @@ common_ubuntu_release_upgrade() {
 
   # 20.04 (focal)
   if [ $DISTRIB_CODENAME = "focal" -o $(uname -r | awk -F- '{print $1}') = "5.4.0" ]; then
+    ### add sources.list ###
+    if [ -f /etc/apt/sources.list.d/VMW-internal-mirror-xenial.list ]; then
+      sudo rm -f /etc/apt/sources.list.d/VMW-internal-mirror-xenial.list
+    fi
+    if [ -f /etc/apt/sources.list.d/VMW-internal-mirror-bionic.list ]; then
+      sudo rm -f /etc/apt/sources.list.d/VMW-internal-mirror-bionic.list
+    fi
+    sudo sh -c 'echo "deb https://build-artifactory.eng.vmware.com/artifactory/ubuntu-remote/ focal main restricted universe multiverse" > /etc/apt/sources.list.d/VMW-internal-mirror-focal.list'
+
+    sudo apt-get update
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
   fi
@@ -222,13 +240,9 @@ common_ubuntu_release_upgrade() {
 }
 
 common_add_ssh_pubkey() {
-  if [ ! -f $HOME/.ssh/authorized_keys ] || ! grep -q ssh-import-id $HOME/.ssh/authorized_keys ; then
-    sudo apt-get update
-    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes -o Dpkg::Options::=\"--force-confnew\" git ssh-import-id"
+  if [ ! -f $HOME/.ssh/authorized_keys ] ; then
     github_id="${GITHUB_ID:-kenojiri}"
-    echo "Installing SSH public key..."
-    ssh-import-id-gh $github_id
-  fi
+    ${CURL} https://github.com/${github_id}.keys > $HOME/.ssh/authorized_keys
 }
 
 common_timezone_to_utc() {

@@ -14,17 +14,16 @@ fi
 ### read common functions ###
 TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
 mkdir -p ${TMPDIR}
-curl -s https://pvtl.cf/jbox-common.sh -o ${TMPDIR}/jbox-common.sh
+curl -sk https://pvtl.cf/jbox-common.sh -o ${TMPDIR}/jbox-common.sh
 source ${TMPDIR}/jbox-common.sh
-curl -s https://pvtl.cf/vsphere-common.sh -o ${TMPDIR}/vsphere-common.sh
+curl -sk https://pvtl.cf/vsphere-common.sh -o ${TMPDIR}/vsphere-common.sh
 source ${TMPDIR}/vsphere-common.sh
 rm -rf ${TMPDIR}
 
 install() {
-
-  ### add sources.list ###
-  sudo sh -c 'echo "deb https://build-artifactory.eng.vmware.com/artifactory/ubuntu-remote/ focal main restricted universe multiverse" > /etc/apt/sources.list.d/VMW-internal-mirror.list'
-
+  common_timezone_to_utc
+  common_add_ssh_pubkey
+  common_ubuntu_release_upgrade
   common_install_docker
   common_install
   vsphere_install
