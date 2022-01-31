@@ -253,11 +253,12 @@ common_timezone_to_utc() {
   mkdir -p ${TMPDIR}
 
   cat<<EOF > ${TMPDIR}/tzdata.debconf
-tzdata/Zones/Etc: UTC
-tzdata/Areas: Etc
+tzdata tzdata/Zones/Etc select UTC
+tzdata tzdata/Areas select Etc
 EOF
   export DEBIAN_FRONTEND=noninteractive
   export DEBCONF_NONINTERACTIVE_SEEN=true
   sudo debconf-set-selections ${TMPDIR}/tzdata.debconf
   sudo debconf-show tzdata
+  sudo dpkg-reconfigure -f noninteractive tzdata
 }
