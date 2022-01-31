@@ -190,7 +190,7 @@ common_ubuntu_release_upgrade() {
   source /etc/lsb-release
 
   # 16.04 (xenial)
-  if [ $DISTRIB_CODENAME = "xenial" -o $(uname -r | awk -F- '{print $1}') = "4.4.0" ]; then
+  if [ $DISTRIB_CODENAME = "xenial" ]; then
     ### add sources.list ###
     sudo sh -c 'echo "deb https://build-artifactory.eng.vmware.com/artifactory/ubuntu-remote/ xenial main restricted universe multiverse" > /etc/apt/sources.list.d/VMW-internal-mirror-xenial.list'
 
@@ -212,6 +212,7 @@ common_ubuntu_release_upgrade() {
     fi
     sudo sh -c 'echo "deb https://build-artifactory.eng.vmware.com/artifactory/ubuntu-remote/ bionic main restricted universe multiverse" > /etc/apt/sources.list.d/VMW-internal-mirror-bionic.list'
 
+    sudo apt-get update
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes -o Dpkg::Options::=\"--force-confnew\" update-manager-core"
@@ -221,7 +222,7 @@ common_ubuntu_release_upgrade() {
   fi
 
   # 20.04 (focal)
-  if [ $DISTRIB_CODENAME = "focal" -o $(uname -r | awk -F- '{print $1}') = "5.4.0" ]; then
+  if [ $DISTRIB_CODENAME = "focal" ]; then
     ### add sources.list ###
     if [ -f /etc/apt/sources.list.d/VMW-internal-mirror-xenial.list ]; then
       sudo rm -f /etc/apt/sources.list.d/VMW-internal-mirror-xenial.list
