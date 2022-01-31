@@ -243,6 +243,7 @@ common_add_ssh_pubkey() {
   if [ ! -f $HOME/.ssh/authorized_keys ] ; then
     github_id="${GITHUB_ID:-kenojiri}"
     ${CURL} https://github.com/${github_id}.keys > $HOME/.ssh/authorized_keys
+  fi
 }
 
 common_timezone_to_utc() {
