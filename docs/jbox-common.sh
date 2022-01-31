@@ -193,6 +193,8 @@ common_ubuntu_release_upgrade() {
   if [ $DISTRIB_CODENAME = "xenial" -o $(uname -r | awk -F- '{print $1}') = "4.4.0" ]; then
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes -o Dpkg::Options::=\"--force-confnew\" update-manager-core"
     sudo do-release-upgrade -c
+    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
+    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
     sudo do-release-upgrade -f DistUpgradeViewNonInteractive
     sudo reboot
   fi
