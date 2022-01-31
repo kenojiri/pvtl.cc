@@ -192,7 +192,7 @@ common_ubuntu_release_upgrade() {
   sudo apt-get update
   sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
   if [ $DISTRIB_CODENAME = "xenial" ]; then
-    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -f -y --force-yes -o Dpkg::Options::=\"--force-confnew\" console-setup-linux keyboard-configuration console-setup systemd libpam-systemd"
+    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -f -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
     sudo do-release-upgrade -f DistUpgradeViewNonInteractive
     sudo reboot
   fi
