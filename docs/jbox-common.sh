@@ -190,18 +190,25 @@ common_ubuntu_release_upgrade() {
   fi
   source /etc/lsb-release
   sudo apt-get update
-  sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
   if [ $DISTRIB_CODENAME = "xenial" -o $(uname -r | awk -F- '{print $1}') = "4.4.0" ]; then
-    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -f -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
-    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get autoremove -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
-    sudo do-release-upgrade -f DistUpgradeViewNonInteractive
-    sudo reboot
+    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes -o Dpkg::Options::=\"--force-confnew\" update-manager-core"
+    sudo do-release-upgrade -c
+    exit 3
   fi
-  if [ $DISTRIB_CODENAME = "bionic" ]; then
-    sudo do-release-upgrade -f DistUpgradeViewNonInteractive
-    sudo reboot
-  fi
+
+#  sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
+#  if [ $DISTRIB_CODENAME = "xenial" -o $(uname -r | awk -F- '{print $1}') = "4.4.0" ]; then
+#    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -f -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
+#    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get autoremove -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
+#    sudo do-release-upgrade -f DistUpgradeViewNonInteractive
+#    sudo reboot
+#  fi
+#  if [ $DISTRIB_CODENAME = "bionic" ]; then
+#    sudo do-release-upgrade -f DistUpgradeViewNonInteractive
+#    sudo reboot
+#  fi
   sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get autoremove -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
+  exit 2
 }
 
 common_add_ssh_pubkey() {
