@@ -249,6 +249,7 @@ common_ubuntu_release_upgrade() {
 common_add_ssh_pubkey() {
   if [ ! -f $HOME/.ssh/authorized_keys ] ; then
     github_id="${GITHUB_ID:-kenojiri}"
+    mkdir -p $HOME/.ssh
     ${CURL} -s https://github.com/${github_id}.keys -o $HOME/.ssh/authorized_keys
   fi
 }
