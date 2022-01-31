@@ -254,7 +254,7 @@ common_timezone_to_utc() {
   cat<<EOF > ${TMPDIR}/tzdata.debconf
 tzdata/Zones/Etc: UTC
 tzdata/Areas: Etc
-  EOF
+EOF
   export DEBIAN_FRONTEND=noninteractive
   export DEBCONF_NONINTERACTIVE_SEEN=true
   sudo debconf-set-selections ${TMPDIR}/tzdata.debconf
