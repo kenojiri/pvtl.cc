@@ -190,6 +190,8 @@ common_ubuntu_release_upgrade() {
   fi
   source /etc/lsb-release
   sudo apt-get update
+
+  # 16.04 (xenial)
   if [ $DISTRIB_CODENAME = "xenial" -o $(uname -r | awk -F- '{print $1}') = "4.4.0" ]; then
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes -o Dpkg::Options::=\"--force-confnew\" update-manager-core"
     sudo do-release-upgrade -c
@@ -200,19 +202,24 @@ common_ubuntu_release_upgrade() {
     sudo reboot
   fi
 
-#  sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
-#  if [ $DISTRIB_CODENAME = "xenial" -o $(uname -r | awk -F- '{print $1}') = "4.4.0" ]; then
-#    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -f -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
-#    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get autoremove -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
-#    sudo do-release-upgrade -f DistUpgradeViewNonInteractive
-#    sudo reboot
-#  fi
-#  if [ $DISTRIB_CODENAME = "bionic" ]; then
-#    sudo do-release-upgrade -f DistUpgradeViewNonInteractive
-#    sudo reboot
-#  fi
+  # 18.04 (bionic)
+  ## TODO
+  if [ $DISTRIB_CODENAME = "bionic" ]; then
+    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes -o Dpkg::Options::=\"--force-confnew\" update-manager-core"
+    sudo do-release-upgrade -c
+    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
+    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
+    sudo do-release-upgrade -f DistUpgradeViewNonInteractive
+    sudo reboot
+  fi
+
+  # 20.04 (focal)
+  if [ $DISTRIB_CODENAME = "focal" -o $(uname -r | awk -F- '{print $1}') = "5.4.0" ]; then
+    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
+    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
+  fi
+
   sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get autoremove -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
-  exit 2
 }
 
 common_add_ssh_pubkey() {
@@ -223,4 +230,19 @@ common_add_ssh_pubkey() {
     echo "Installing SSH public key..."
     ssh-import-id-gh $github_id
   fi
+}
+
+common_timezone_to_utc() {
+  ### make temporary directory ###
+  TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+  mkdir -p ${TMPDIR}
+
+  cat<<EOF > ${TMPDIR}/tzdata.debconf
+tzdata/Zones/Etc: UTC
+tzdata/Areas: Etc
+  EOF
+  export DEBIAN_FRONTEND=noninteractive
+  export DEBCONF_NONINTERACTIVE_SEEN=true
+  sudo debconf-set-selections ${TMPDIR}/tzdata.debconf
+  sudo debconf-show tzdata
 }

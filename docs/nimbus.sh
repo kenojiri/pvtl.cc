@@ -33,11 +33,14 @@ install() {
 
   ### add sources.list ###
   sudo sh -c 'echo "deb https://build-artifactory.eng.vmware.com/artifactory/ubuntu-remote/ focal main restricted universe multiverse" > /etc/apt/sources.list.d/VMW-internal-mirror.list'
+
   ### delete sources.list ###
   if [ -f /etc/apt/sources.list.d/influxdb.list ] ; then
     ## delete entry: deb https://repos.influxdata.com/ubuntu xenial stable
     sudo rm -f /etc/apt/sources.list.d/influxdb.list
   fi
+
+  common_timezone_to_utc
 
   common_add_ssh_pubkey
 
@@ -47,7 +50,6 @@ install() {
   common_install_k3s_master
 
   vsphere_install
-  #vsphere_vmw_cli_install
   vsphere_vmd_install
 
   sudo wget "https://runway-ci.eng.vmware.com/api/v1/cli?arch=amd64&platform=linux" -O fly
