@@ -191,8 +191,9 @@ common_ubuntu_release_upgrade() {
   source /etc/lsb-release
   sudo apt-get update
   sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
-  if [ $DISTRIB_CODENAME = "xenial" ]; then
+  if [ $DISTRIB_CODENAME = "xenial" -o $(uname -r | awk -F- '{print $1}') = "4.4.0" ]; then
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -f -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
+    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get autoremove -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
     sudo do-release-upgrade -f DistUpgradeViewNonInteractive
     sudo reboot
   fi
@@ -200,7 +201,7 @@ common_ubuntu_release_upgrade() {
     sudo do-release-upgrade -f DistUpgradeViewNonInteractive
     sudo reboot
   fi
-  sudo apt-get autoremove -y
+  sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get autoremove -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
 }
 
 common_add_ssh_pubkey() {
