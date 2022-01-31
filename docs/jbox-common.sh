@@ -204,6 +204,7 @@ common_ubuntu_release_upgrade() {
   # 18.04 (bionic)
   if [ $DISTRIB_CODENAME = "bionic" ]; then
     if [ $(uname -r | awk -F- '{print $1}') != "4.15.0" ]; then
+      sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -f -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
       sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
       sudo reboot
     fi
@@ -225,6 +226,7 @@ common_ubuntu_release_upgrade() {
   # 20.04 (focal)
   if [ $DISTRIB_CODENAME = "focal" ]; then
     if [ $(uname -r | awk -F- '{print $1}') != "5.4.0" ]; then
+      sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -f -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
       sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
       sudo reboot
     fi
