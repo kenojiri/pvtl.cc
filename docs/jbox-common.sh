@@ -69,7 +69,6 @@ common_install() {
   echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
   sudo apt-get update
   sudo apt-get install -y cf-cli
-  sudo curl -vL https://raw.githubusercontent.com/cloudfoundry/cli/master/ci/installers/completion/cf -o /usr/share/bash-completion/completions/cf
 
   ### bosh ###
   VERSION=$(${CURL} -s https://api.github.com/repos/cloudfoundry/bosh-cli/releases/latest | jq -r .name | tr -d 'v')
@@ -93,16 +92,16 @@ common_install() {
   popd
 
   ### BOSH Backup and Restore CLI (bbr) ###
-  VERSION=$(${CURL} -s https://api.github.com/repos/cloudfoundry-incubator/bosh-backup-and-restore/releases/latest | jq -r .tag_name | sed 's/v//')
+  VERSION=$(${CURL} -s https://api.github.com/repos/cloudfoundry/bosh-backup-and-restore/releases/latest | jq -r .tag_name | sed 's/v//')
   pushd ${TMPDIR}
-    curl -vL https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${VERSION}/bbr-${VERSION}-linux-amd64 -o ./bbr
+    curl -vL https://github.com/cloudfoundry/bosh-backup-and-restore/releases/download/v${VERSION}/bbr-${VERSION}-linux-amd64 -o ./bbr
     sudo install -m 755 ./bbr /usr/local/bin/
   popd
 
   ### CredHub CLI ###
-  VERSION=$(${CURL} -s https://api.github.com/repos/cloudfoundry-incubator/credhub-cli/releases/latest | jq -r .tag_name)
+  VERSION=$(${CURL} -s https://api.github.com/repos/cloudfoundry/credhub-cli/releases/latest | jq -r .tag_name)
   pushd ${TMPDIR}
-    curl -vL https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${VERSION}/credhub-linux-${VERSION}.tgz | tar zxvf -
+    curl -vL https://github.com/cloudfoundry/credhub-cli/releases/download/${VERSION}/credhub-linux-${VERSION}.tgz | tar zxvf -
     sudo install -m 755 ./credhub /usr/local/bin/
   popd
 
@@ -205,10 +204,10 @@ common_ubuntu_release_upgrade() {
   # 18.04 (bionic)
   ## TODO
   if [ $DISTRIB_CODENAME = "bionic" ]; then
-    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes -o Dpkg::Options::=\"--force-confnew\" update-manager-core"
-    sudo do-release-upgrade -c
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
+    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes -o Dpkg::Options::=\"--force-confnew\" update-manager-core"
+    sudo do-release-upgrade -c
     sudo do-release-upgrade -f DistUpgradeViewNonInteractive
     sudo reboot
   fi
