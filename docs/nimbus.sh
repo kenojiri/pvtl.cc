@@ -53,13 +53,21 @@ install() {
 
   sudo wget "https://runway-ci.eng.vmware.com/api/v1/cli?arch=amd64&platform=linux" -O fly
   sudo install ./fly /usr/local/bin/
+  sudo chmod +x /usr/local/bin/fly
 
   sudo wget "https://runway.eng.vmware.com/cli/2.0.0/linux/runctl" -O runctl
   sudo install ./runctl /usr/local/bin/
+  sudo chmod +x /usr/local/bin/runctl
 }
 
 setup_homedir() {
   common_setup_homedir
+
+  ### use /data partition for ~/workspace directory ###
+  sudo mkdir -p /data/workspace
+  sudo chown worker.worker /data/workspace
+  ln -s /data/workspace ${HOME}/workspace
+
   vsphere_setup_homedir
 
   ### workspace directory ###
