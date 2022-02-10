@@ -29,20 +29,22 @@ curl -sk https://pvtl.cf/vsphere-common.sh -o ${TMPDIR}/vsphere-common.sh
 source ${TMPDIR}/vsphere-common.sh
 rm -rf ${TMPDIR}
 
-install() {
-
+prepare() {
   ### delete sources.list ###
   if [ -f /etc/apt/sources.list.d/influxdb.list ] ; then
     ## delete entry: deb https://repos.influxdata.com/ubuntu xenial stable
     sudo rm -f /etc/apt/sources.list.d/influxdb.list
   fi
 
-  common_timezone_to_utc
-
   common_add_ssh_pubkey
 
   common_ubuntu_release_upgrade
 
+  ### change timezone to UTC ###
+  sudo timedatectl set-timezone Etc/UTC
+}
+
+install() {
   common_install
   common_install_k3s_master
 
@@ -105,6 +107,7 @@ direnv allow
 EOT
 }
 
+prepare
 install
 setup_homedir
 conclusion

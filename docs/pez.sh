@@ -15,9 +15,12 @@ source ${TMPDIR}/vsphere-common.sh
 rm -rf ${TMPDIR}
 
 install() {
-  common_timezone_to_utc
   common_add_ssh_pubkey
   common_ubuntu_release_upgrade
+
+  ### change timezone to UTC ###
+  sudo timedatectl set-timezone Etc/UTC
+
   common_install
   vsphere_install
 }

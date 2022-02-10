@@ -255,19 +255,3 @@ common_add_ssh_pubkey() {
     ${CURL} -s https://github.com/${github_id}.keys -o $HOME/.ssh/authorized_keys
   fi
 }
-
-common_timezone_to_utc() {
-  ### make temporary directory ###
-  TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
-  mkdir -p ${TMPDIR}
-
-  cat<<EOF > ${TMPDIR}/tzdata.debconf
-tzdata tzdata/Zones/Etc select UTC
-tzdata tzdata/Areas select Etc
-EOF
-  export DEBIAN_FRONTEND=noninteractive
-  export DEBCONF_NONINTERACTIVE_SEEN=true
-  sudo debconf-set-selections ${TMPDIR}/tzdata.debconf
-  sudo debconf-show tzdata
-  sudo dpkg-reconfigure -f noninteractive tzdata
-}
