@@ -141,6 +141,8 @@ common_setup_homedir() {
     cat <<EOT >> ${HOME}/.bash_profile
 eval "\$(kubectl completion bash)"
 eval "\$(direnv hook bash)"
+alias k=kubectl
+complete -o default -F __start_kubectl k
 EOT
   fi
 
