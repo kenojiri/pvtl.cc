@@ -54,8 +54,8 @@ common_install() {
     sudo install -m 755 velero-*/velero /usr/local/bin/velero
   popd
 
-  ### k14s (ytt, kbld, kapp, imgpkg, vendir, kwt, and etc.) ###
-  curl -vL https://k14s.io/install.sh | sudo bash
+  ### Carvel (ytt, kbld, kapp, imgpkg, vendir, kwt, and etc.) ###
+  curl -vL https://carvel.dev/install.sh | sudo bash
 
   ### yj ###
   VERSION=$(${CURL} -s https://api.github.com/repos/sclevine/yj/releases/latest | jq -r .tag_name) &&\
