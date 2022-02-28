@@ -16,7 +16,6 @@ rm -rf ${TMPDIR}
 
 install() {
   common_add_ssh_pubkey
-  common_ubuntu_release_upgrade
 
   ### change timezone to UTC ###
   sudo timedatectl set-timezone Etc/UTC

@@ -23,7 +23,6 @@ rm -rf ${TMPDIR}
 install() {
   common_timezone_to_utc
   common_add_ssh_pubkey
-  common_ubuntu_release_upgrade
   common_install_docker
   common_install
   vsphere_install
