@@ -47,6 +47,20 @@ vsphere_vmw_cli_install() {
   rm -rf ${TMPDIR}
 }
 
+vsphere_vmw_cli_install_external() {
+  ### make temporary directory ###
+  TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+  mkdir -p ${TMPDIR}
+
+  ### My VMware CLI (vmw-cli) ###
+  # see: https://github.com/apnex/vmw-cli
+  sudo docker run apnex/vmw-cli shell > ${TMPDIR}/vmw-cli
+  sudo install -m 755 ${TMPDIR}/vmw-cli /usr/local/bin/
+
+  ### remove temporary directory ###
+  rm -rf ${TMPDIR}
+}
+
 vsphere_vmd_install() {
   ### make temporary directory ###
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
@@ -55,8 +69,8 @@ vsphere_vmd_install() {
   ### vmd CLI ###
   VERSION=$(${CURL} -s https://api.github.com/repos/laidbackware/vmd/releases/latest | jq -r .tag_name)
   pushd ${TMPDIR}
-    curl -LO https://github.com/laidbackware/vmd/releases/download/${VERSION}/vmd-linux-${VERSION}
-    sudo install -m 755 ./vmd-linux-* /usr/local/bin/vmd
+    curl -LO https://github.com/laidbackware/vmd/releases/download/${VERSION}/vmd-linux-${VERSION} -o vmd
+    sudo install -m 755 ./vmd /usr/local/bin/
   popd
 
   ### remove temporary directory ###

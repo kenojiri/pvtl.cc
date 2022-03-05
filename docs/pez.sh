@@ -21,6 +21,7 @@ install() {
   sudo timedatectl set-timezone Etc/UTC
 
   common_install
+  vsphere_vmd_install
   vsphere_install
 }
 
@@ -49,12 +50,13 @@ export S3_PIVNET_BUCKET="pipeline-factory"
 
 export VMWUSER='***CHANGEME***'
 export VMWPASS='***CHANGEME***'
+export VMD_USER=\${VMWUSER}
+export VMD_PASS=\${VMWPASS}
 
 export PIVNET_TOKEN="***CHANGEME***"
 pivnet login --api-token=\$PIVNET_TOKEN
 
 export OM_SSHKEY_FILEPATH='/tmp/opsman.pem'
-
 export TKGIMC_HOST='***CHANGEME***'
 export TKGIMC_PASSWORD=\${ENV_PASSWORD}
 if [ -v TKGIMC_HOST ]; then
