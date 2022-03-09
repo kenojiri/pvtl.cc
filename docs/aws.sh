@@ -101,7 +101,7 @@ pivnet login --api-token=\${PIVNET_TOKEN}
 ### OpsManager credentials
 export ENV_NAME=aws
 export MASTER_PASSWORD='***CHANGEMECHANGEME***'
-export DOMAIN_NAME=$(echo $DNS_ZONE | sed -e "s/.\$//")
+export DOMAIN_NAME=\$(echo $DNS_ZONE | sed -e "s/\\.\$//")
 export OM_HOSTNAME="opsmanager.\${ENV_NAME}.\${DOMAIN_NAME}"
 export OM_USERNAME='admin'
 export OM_PASSWORD=\${MASTER_PASSWORD}
