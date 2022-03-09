@@ -21,7 +21,7 @@ common_install() {
   sudo apt-get update
   sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y \
     -o Dpkg::Options::="--force-confnew" \
-    git tmux jq direnv unzip groff netcat-openbsd bash-completion sshpass \
+    git mosh tmux jq direnv unzip groff netcat-openbsd bash-completion sshpass \
     apt-transport-https gnupg software-properties-common"
 
   ### minio CLI (mc) ###
