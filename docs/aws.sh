@@ -72,40 +72,48 @@ setup_homedir() {
   mkdir -p $HOME/workspace/scripts
   cat <<EOT > ${HOME}/workspace/.envrc.tmpl
 ### AWS credentials
-export AWS_ACCESS_KEY_ID="***CHANGEMECHANGEME***"
-export AWS_SECRET_ACCESS_KEY="***CHANGEMECHANGEME***"
-#tokyo#export AWS_DEFAULT_REGION="ap-northeast-1"
-#osaka#export AWS_DEFAULT_REGION="ap-northeast-3"
-#singapore#export AWS_DEFAULT_REGION="ap-southeast-1"
-#sydney#export AWS_DEFAULT_REGION="ap-southeast-2"
-export AWS_DEFAULT_REGION="ap-southeast-1"
+export AWS_ACCESS_KEY_ID='***CHANGEMECHANGEME***'
+export AWS_SECRET_ACCESS_KEY='***CHANGEMECHANGEME***'
+#tokyo#export AWS_DEFAULT_REGION='ap-northeast-1'
+#osaka#export AWS_DEFAULT_REGION='ap-northeast-3'
+#singapore#export AWS_DEFAULT_REGION='ap-southeast-1'
+#sydney#export AWS_DEFAULT_REGION='ap-southeast-2'
+export AWS_DEFAULT_REGION='ap-northeast-1'
 export AWS_REGION=\${AWS_DEFAULT_REGION}
-export AWS_IAM_USER_NAME="tanzu"
-export DNS_ZONE="pvtl.cf."
+export AWS_IAM_USER_NAME='tanzu'
+export DNS_ZONE='pvtl.cf.'
 
 export S3_ACCESS_KEY_ID=\${AWS_ACCESS_KEY_ID}
 export S3_SECRET_ACCESS_KEY=\${AWS_SECRET_ACCESS_KEY}
 
+### VMware product download credentials
+export VMWUSER='***CHANGEMECHANGEME***'
+export VMWPASS='***CHANGEMECHANGEME***'
+export VMD_USER=\${VMWUSER}
+export VMD_PASS=\${VMWPASS}
+
+### VMware Tanzu Network credentials
+export TANZUNET_USERNAME='***CHANGEMECHANGEME***'
+export TANZUNET_PASSWORD='***CHANGEMECHANGEME***'
+export PIVNET_TOKEN='***CHANGEMECHANGEME***'
+pivnet login --api-token=\${PIVNET_TOKEN}
+
 ### OpsManager credentials
 export ENV_NAME=aws
-export MASTER_PASSWORD="***CHANGEMECHANGEME***"
+export MASTER_PASSWORD='***CHANGEMECHANGEME***'
 export DOMAIN_NAME=$(echo $DNS_ZONE | sed -e "s/.\$//")
 export OM_HOSTNAME="opsmanager.\${ENV_NAME}.\${DOMAIN_NAME}"
-export OM_USERNAME="admin"
+export OM_USERNAME='admin'
 export OM_PASSWORD=\${MASTER_PASSWORD}
 export OM_DECRYPTION_PASSPHRASE=\${OM_PASSWORD}
 export OM_TARGET="https://\${OM_HOSTNAME}"
-export OM_SKIP_SSL_VALIDATION="true"
+export OM_SKIP_SSL_VALIDATION='true'
 
 ### BOSH credentials
 export BOSH_ALL_PROXY="ssh+socks5://ubuntu@\${OM_HOSTNAME}:22?private-key=\${HOME}/workspace/.opsman_ssh_key"
 if [ \$(\$(nc -zw 1 \${OM_HOSTNAME} 443); echo \$?) -eq 0 ]; then
   eval "\$(om bosh-env)"
 fi
-
-### VMware Tanzu Network credentials
-export PIVNET_TOKEN="***CHANGEMECHANGEME***"
-pivnet login --api-token=\${PIVNET_TOKEN}
 
 ### TKGI credentials
 if [ -v BOSH_CLIENT ]; then
