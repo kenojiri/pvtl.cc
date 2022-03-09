@@ -43,6 +43,9 @@ source ${TMPDIR}/common.sh
 rm -rf ${TMPDIR}
 
 install() {
+  ### change timezone to UTC ###
+  sudo timedatectl set-timezone Etc/UTC
+
   common_install
   common_install_docker
 
@@ -65,13 +68,6 @@ setup_homedir() {
   common_add_ssh_pubkey
   common_setup_homedir
 
-  ### SSH via key ###
-  if [ ! -f $HOME/.ssh/authorized_keys ] || ! grep -q ssh-import-id $HOME/.ssh/authorized_keys ; then
-    github_id="${GITHUB_ID:-kenojiri}"
-    echo "Installing SSH public key..."
-    ssh-import-id-gh $github_id
-  fi
-
   ### workspace directory ###
   mkdir -p $HOME/workspace/scripts
   cat <<EOT > ${HOME}/workspace/.envrc.tmpl
@@ -81,7 +77,9 @@ export AWS_SECRET_ACCESS_KEY="***CHANGEMECHANGEME***"
 #tokyo#export AWS_DEFAULT_REGION="ap-northeast-1"
 #osaka#export AWS_DEFAULT_REGION="ap-northeast-3"
 #singapore#export AWS_DEFAULT_REGION="ap-southeast-1"
+#sydney#export AWS_DEFAULT_REGION="ap-southeast-2"
 export AWS_DEFAULT_REGION="ap-southeast-1"
+export AWS_REGION=\${AWS_DEFAULT_REGION}
 export AWS_IAM_USER_NAME="tanzu"
 export DNS_ZONE="pvtl.cf."
 
