@@ -32,6 +32,7 @@ prepare() {
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
     sudo do-release-upgrade -f DistUpgradeViewNonInteractive
+    sudo mv /etc/resolv.conf /etc/resolv.conf.org && sudo ln -s /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
     sudo reboot
   fi
 
