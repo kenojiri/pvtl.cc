@@ -144,7 +144,7 @@ vim workspace/.envrc
 2. re-login via mosh and start tmux
 =====
 exit
-mosh ***@nimbus.pvtl.cf
+mosh ***@nimbus.pvtl.cc
 tmux
 =====
 

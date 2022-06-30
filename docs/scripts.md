@@ -10,6 +10,6 @@
 
 ## usage
 ```
-curl -sL https://pvtl.cf/????.sh | bash
+curl -sL https://pvtl.cc/????.sh | bash
 ```
 

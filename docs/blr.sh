@@ -14,9 +14,9 @@ fi
 ### read common functions ###
 TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
 mkdir -p ${TMPDIR}
-curl -sk https://pvtl.cf/jbox-common.sh -o ${TMPDIR}/jbox-common.sh
+curl -sk https://pvtl.cc/jbox-common.sh -o ${TMPDIR}/jbox-common.sh
 source ${TMPDIR}/jbox-common.sh
-curl -sk https://pvtl.cf/vsphere-common.sh -o ${TMPDIR}/vsphere-common.sh
+curl -sk https://pvtl.cc/vsphere-common.sh -o ${TMPDIR}/vsphere-common.sh
 source ${TMPDIR}/vsphere-common.sh
 rm -rf ${TMPDIR}
 
@@ -80,7 +80,7 @@ vim workspace/.envrc
 2. re-login via mosh and start tmux
 =====
 exit
-mosh ubuntu@blr.pvtl.cf
+mosh ubuntu@blr.pvtl.cc
 tmux
 =====
 

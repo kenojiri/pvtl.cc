@@ -38,7 +38,7 @@ fi
 ### read common functions ###
 TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
 mkdir -p ${TMPDIR}
-curl https://pvtl.cf/jbox-common.sh -o ${TMPDIR}/common.sh
+curl https://pvtl.cc/jbox-common.sh -o ${TMPDIR}/common.sh
 source ${TMPDIR}/common.sh
 rm -rf ${TMPDIR}
 
@@ -68,7 +68,7 @@ setup_homedir() {
 ### OpsManager credentials
 export ENV_NAME=azr
 export MASTER_PASSWORD="***CHANGEMECHANGEME***"
-export DOMAIN_NAME=pvtl.cf
+export DOMAIN_NAME=pvtl.cc
 export OM_HOSTNAME="om.\${ENV_NAME}.\${DOMAIN_NAME}"
 export OM_USERNAME="admin"
 export OM_PASSWORD=\${MASTER_PASSWORD}

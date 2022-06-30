@@ -38,7 +38,7 @@ fi
 ### read common functions ###
 TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
 mkdir -p ${TMPDIR}
-curl -s https://pvtl.cf/jbox-common.sh -o ${TMPDIR}/common.sh
+curl -s https://pvtl.cc/jbox-common.sh -o ${TMPDIR}/common.sh
 source ${TMPDIR}/common.sh
 rm -rf ${TMPDIR}
 
@@ -81,7 +81,7 @@ export AWS_SECRET_ACCESS_KEY='***CHANGEMECHANGEME***'
 export AWS_DEFAULT_REGION='ap-northeast-1'
 export AWS_REGION=\${AWS_DEFAULT_REGION}
 export AWS_IAM_USER_NAME='tanzu'
-export DNS_ZONE='pvtl.cf.'
+export DNS_ZONE='pvtl.cc.'
 
 export S3_ACCESS_KEY_ID=\${AWS_ACCESS_KEY_ID}
 export S3_SECRET_ACCESS_KEY=\${AWS_SECRET_ACCESS_KEY}

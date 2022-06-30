@@ -1,4 +1,4 @@
-# pvtl.cf
+# pvtl.cc
 
 a website of static contents
 
