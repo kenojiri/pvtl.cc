@@ -80,6 +80,15 @@ prepare() {
     sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
   fi
 
+  # 22.04 (jammy)
+  if [ $DISTRIB_CODENAME = "jammy" ]; then
+    sudo sh -c 'echo "deb https://build-artifactory.eng.vmware.com/artifactory/ubuntu-remote/ jammy main restricted universe multiverse" > /etc/apt/sources.list.d/VMW-internal-mirror-jammy.list'
+
+    sudo apt-get update
+    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
+    sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
+  fi
+
   sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get autoremove -y --force-yes -o Dpkg::Options::=\"--force-confnew\""
 
   ### change timezone to UTC ###
