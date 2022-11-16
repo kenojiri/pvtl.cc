@@ -34,5 +34,6 @@ rm -rf ${TMPDIR}
 prepare
 install
 common_install_k3s_master
+common_install_k8s_accessories
 setup_homedir
 conclusion

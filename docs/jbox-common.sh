@@ -24,6 +24,16 @@ common_install() {
     git mosh tmux jq direnv unzip groff netcat-openbsd bash-completion sshpass \
     apt-transport-https gnupg software-properties-common"
 
+  ### starship ###
+  curl -sS https://starship.rs/install.sh | sh
+
+  ### yj ###
+  VERSION=$(${CURL} -s https://api.github.com/repos/sclevine/yj/releases/latest | jq -r .tag_name) &&\
+  pushd ${TMPDIR}
+    curl -vL https://github.com/sclevine/yj/releases/download/${VERSION}/yj-linux -o ./yj &&\
+    sudo install -m 755 yj /usr/local/bin/
+  popd
+
   ### minio CLI (mc) ###
   pushd ${TMPDIR}
     curl -LO https://dl.minio.io/client/mc/release/linux-amd64/mc -o ./mc
@@ -36,32 +46,6 @@ common_install() {
     curl -vL https://github.com/go-acme/lego/releases/download/${VERSION}/lego_${VERSION}_linux_amd64.tar.gz -o lego.tgz
     tar zxvf lego.tgz
     sudo install -m 755 lego /usr/local/bin/lego
-  popd
-
-  ### Helm ###
-  VERSION=$(${CURL} -s https://api.github.com/repos/helm/helm/releases/latest | jq -r .tag_name)
-  pushd ${TMPDIR}
-    curl -vL https://get.helm.sh/helm-${VERSION}-linux-amd64.tar.gz -o helm.tgz
-    tar zxvf helm.tgz linux-amd64/
-    sudo install -m 755 linux-amd64/helm /usr/local/bin/helm
-  popd
-
-  ### Velero ###
-  VERSION=$(${CURL} -s https://api.github.com/repos/vmware-tanzu/velero/releases/latest | jq -r .tag_name)
-  pushd ${TMPDIR}
-    curl -vL https://github.com/vmware-tanzu/velero/releases/download/${VERSION}/velero-${VERSION}-linux-amd64.tar.gz -o velero.tgz
-    tar zxvf velero.tgz
-    sudo install -m 755 velero-*/velero /usr/local/bin/velero
-  popd
-
-  ### Carvel (ytt, kbld, kapp, imgpkg, vendir, kwt, and etc.) ###
-  curl -vL https://carvel.dev/install.sh | sudo bash
-
-  ### yj ###
-  VERSION=$(${CURL} -s https://api.github.com/repos/sclevine/yj/releases/latest | jq -r .tag_name) &&\
-  pushd ${TMPDIR}
-    curl -vL https://github.com/sclevine/yj/releases/download/${VERSION}/yj-linux -o ./yj &&\
-    sudo install -m 755 yj /usr/local/bin/
   popd
 
   ### Cloud Foundry CLI (cf) ###
@@ -121,6 +105,59 @@ common_install() {
   rm -rf ${TMPDIR}
 }
 
+common_install_kubectl() {
+  ### make temporary directory ###
+  TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+  mkdir -p ${TMPDIR}
+
+
+  ### remove temporary directory ###
+  rm -rf ${TMPDIR}
+}
+
+common_install_k8s_accessories() {
+  ### make temporary directory ###
+  TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+  mkdir -p ${TMPDIR}
+
+  ### Carvel (ytt, kbld, kapp, imgpkg, vendir, kwt, and etc.) ###
+  curl -vL https://carvel.dev/install.sh | sudo bash
+
+  ### krew and kubectl plugins ###
+  VERSION=$(${CURL} -s https://api.github.com/repos/kubernetes-sigs/krew/releases/latest | jq -r .tag_name) &&\
+  pushd ${TMPDIR}
+    wget https://github.com/kubernetes-sigs/krew/releases/download/v0.4.3/krew-linux_amd64.tar.gz
+    tar zxvf krew-linux_amd64.tar.gz ./krew-linux_amd64
+    sudo install krew-linux_amd64 /usr/local/bin/krew
+  popd
+  kubectl krew install stern
+  kubectl krew install neat
+  kubectl krew install view-secret
+  kubectl krew install ctx
+  kubectl krew install ns
+  kubectl krew install iexec
+  kubectl krew install resource-capacity
+
+  ### Helm ###
+  VERSION=$(${CURL} -s https://api.github.com/repos/helm/helm/releases/latest | jq -r .tag_name)
+  pushd ${TMPDIR}
+    curl -vL https://get.helm.sh/helm-${VERSION}-linux-amd64.tar.gz -o helm.tgz
+    tar zxvf helm.tgz linux-amd64/
+    sudo install -m 755 linux-amd64/helm /usr/local/bin/helm
+  popd
+
+  ### Velero ###
+  VERSION=$(${CURL} -s https://api.github.com/repos/vmware-tanzu/velero/releases/latest | jq -r .tag_name)
+  pushd ${TMPDIR}
+    curl -vL https://github.com/vmware-tanzu/velero/releases/download/${VERSION}/velero-${VERSION}-linux-amd64.tar.gz -o velero.tgz
+    tar zxvf velero.tgz
+    sudo install -m 755 velero-*/velero /usr/local/bin/velero
+  popd
+
+  ### remove temporary directory ###
+  rm -rf ${TMPDIR}
+}
+
 common_install_docker() {
   curl -sSL https://get.docker.com/ | sudo sh
   sudo usermod -aG docker $(id -un)
@@ -139,10 +176,39 @@ common_setup_homedir() {
   if [ ! -f $HOME/.bash_profile ] || ! grep -q kubectl $HOME/.bash_profile ; then
     echo "Setting .bash_profile..."
     cat <<EOT >> ${HOME}/.bash_profile
-eval "\$(kubectl completion bash)"
+export STARSHIP_CONFIG=$HOME/.starship.toml
+eval "\$(starship init bash)"
 eval "\$(direnv hook bash)"
+eval "\$(kubectl completion bash)"
 alias k=kubectl
 complete -o default -F __start_kubectl k
+printf "\\033k\$(hostname -s)\\033\\\\"
+EOT
+    cat <<EOT >> ${HOME}/.starship.toml
+"\$schema" = 'https://starship.rs/config-schema.json'
+format = "\$username\$hostname\$directory\$all"
+[character]
+success_symbol = "[➜](bold green)"
+[username]
+format = "[\$user](\$style)@"
+style_user = "bold white"
+[hostname]
+ssh_symbol = ""
+format = "[\$ssh_symbol\$hostname](\$style):"
+style = "bold dimmed white"
+[directory]
+truncation_length = 5
+truncate_to_repo = false
+truncation_symbol = "…/"
+style = "bold dimmed white"
+[git_branch]
+symbol = ""
+format = "[\$symbol\$branch(:\$remote_branch)](\$style) "
+[kubernetes]
+disabled = false
+symbol = "☸"
+format = '[\$symbol\$context(\\(\$namespace\\))](\$style) '
+style = "blue bold"
 EOT
   fi
 
