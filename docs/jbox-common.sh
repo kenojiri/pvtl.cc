@@ -155,7 +155,7 @@ common_install_k8s_accessories() {
 common_install_docker() {
   curl -sSL https://get.docker.com/ | sudo sh
   sudo usermod -aG docker $(id -un)
-  sudo apt-get install -y docker-compose
+  #sudo apt-get install -y docker-compose
 }
 
 common_install_k3s_master() {
