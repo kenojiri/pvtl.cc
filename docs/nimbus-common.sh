@@ -113,10 +113,14 @@ install() {
 setup_homedir() {
   common_setup_homedir
 
-  ### use /data partition for ~/workspace directory ###
-  sudo mkdir -p /data/workspace
-  sudo chown worker.worker /data/workspace
-  ln -s /data/workspace ${HOME}/workspace
+  if [ $(lsblk | grep /data | wc -l) > 0]; then
+    ### use /data partition for ~/workspace directory ###
+    sudo mkdir -p /data/workspace
+    sudo chown worker.worker /data/workspace
+    ln -s /data/workspace ${HOME}/workspace
+  else
+    sudo mkdir -p ${HOME}/workspace
+  fi
 
   vsphere_setup_homedir
 
