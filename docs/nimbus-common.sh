@@ -119,7 +119,7 @@ setup_homedir() {
     sudo chown worker.worker /data/workspace
     ln -s /data/workspace ${HOME}/workspace
   else
-    sudo mkdir -p ${HOME}/workspace
+    mkdir -p ${HOME}/workspace
   fi
 
   vsphere_setup_homedir
