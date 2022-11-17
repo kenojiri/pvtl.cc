@@ -113,7 +113,7 @@ install() {
 setup_homedir() {
   common_setup_homedir
 
-  if [ $(lsblk | grep /data | wc -l) > 0]; then
+  if [ $(lsblk | grep /data | wc -l) -gt 0 ]; then
     ### use /data partition for ~/workspace directory ###
     sudo mkdir -p /data/workspace
     sudo chown worker.worker /data/workspace

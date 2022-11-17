@@ -48,12 +48,6 @@ common_install() {
     sudo install -m 755 lego /usr/local/bin/lego
   popd
 
-  ### Cloud Foundry CLI (cf) ###
-  wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
-  echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
-  sudo apt-get update
-  sudo apt-get install -y cf-cli
-
   ### bosh ###
   VERSION=$(${CURL} -s https://api.github.com/repos/cloudfoundry/bosh-cli/releases/latest | jq -r .name | tr -d 'v')
   pushd ${TMPDIR}
