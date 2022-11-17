@@ -155,7 +155,9 @@ common_install_k8s_accessories() {
 common_install_docker() {
   curl -sSL https://get.docker.com/ | sudo sh
   sudo usermod -aG docker $(id -un)
-  #sudo apt-get install -y docker-compose
+  cat <<EOT >> ${HOME}/.bash_profile
+alias docker-compose=docker compose
+EOT
 }
 
 common_install_k3s_master() {
@@ -163,22 +165,17 @@ common_install_k3s_master() {
   sudo chmod 755 /var/lib/rancher/k3s/server/cred
   sudo chmod 755 /var/lib/rancher/k3s/server/tls
   sudo chmod 644 /var/lib/rancher/k3s/server/tls/*
-}
 
-common_setup_homedir() {
-  ### bash ###
-  if [ ! -f $HOME/.bash_profile ] || ! grep -q kubectl $HOME/.bash_profile ; then
-    echo "Setting .bash_profile..."
-    cat <<EOT >> ${HOME}/.bash_profile
-export STARSHIP_CONFIG=$HOME/.starship.toml
-eval "\$(starship init bash)"
-eval "\$(direnv hook bash)"
+  cat <<EOT >> ${HOME}/.bash_profile
 eval "\$(kubectl completion bash)"
 alias k=kubectl
 complete -o default -F __start_kubectl k
-printf "\\033k\$(hostname -s)\\033\\\\"
 EOT
-    cat <<EOT >> ${HOME}/.starship.toml
+}
+
+common_setup_homedir() {
+  ### starship ###
+  cat <<EOT >> ${HOME}/.starship.toml
 "\$schema" = 'https://starship.rs/config-schema.json'
 format = "\$username\$hostname\$directory\$all"
 [character]
@@ -204,12 +201,9 @@ symbol = "☸"
 format = '[\$symbol\$context(\\(\$namespace\\))](\$style) '
 style = "blue bold"
 EOT
-  fi
 
   ### tmux ###
-  if [ ! -f $HOME/.tmux.conf ]; then
-    echo "Setting tmux..."
-    cat <<EOF > $HOME/.tmux.conf
+  cat <<EOT > ${HOME}/.tmux.conf
 set-option -g default-terminal "xterm-256color"
 set-option -ga terminal-overrides ',*256color:Tc'
 
@@ -240,8 +234,15 @@ bind ] paste-buffer
 bind -r w if "tmux display -p \"#{session_windows}\" | grep ^1\$ && tmux display -p \"#{window_panes}\" | grep ^1\$" \
     "confirm-before -p \"Kill the only pane in the only window? It will kill this session too. (y/n)\" kill-pane" \
         "kill-pane"
-EOF
-  fi
+EOT
+
+  ### bash ###
+  cat <<EOT >> ${HOME}/.bash_profile
+export STARSHIP_CONFIG=\${HOME}/.starship.toml
+eval "\$(starship init bash)"
+eval "\$(direnv hook bash)"
+printf "\\033k\$(hostname -s)\\033\\\\"
+EOT
 }
 
 common_add_ssh_pubkey() {
