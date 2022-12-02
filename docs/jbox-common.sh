@@ -120,17 +120,10 @@ common_install_k8s_accessories() {
   ### krew and kubectl plugins ###
   VERSION=$(${CURL} -s https://api.github.com/repos/kubernetes-sigs/krew/releases/latest | jq -r .tag_name) &&\
   pushd ${TMPDIR}
-    wget https://github.com/kubernetes-sigs/krew/releases/download/v0.4.3/krew-linux_amd64.tar.gz
+    wget https://github.com/kubernetes-sigs/krew/releases/download/${VERSION}/krew-linux_amd64.tar.gz
     tar zxvf krew-linux_amd64.tar.gz ./krew-linux_amd64
     sudo install krew-linux_amd64 /usr/local/bin/krew
   popd
-  kubectl krew install stern
-  kubectl krew install neat
-  kubectl krew install view-secret
-  kubectl krew install ctx
-  kubectl krew install ns
-  kubectl krew install iexec
-  kubectl krew install resource-capacity
 
   ### Helm ###
   VERSION=$(${CURL} -s https://api.github.com/repos/helm/helm/releases/latest | jq -r .tag_name)
