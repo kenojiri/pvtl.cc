@@ -15,7 +15,7 @@ common_docker_install() {
   curl -sSL https://get.docker.com/ | sudo sh
   sudo usermod -aG docker $(id -un)
   cat <<EOT >> ${HOME}/.profile
-alias docker-compose=docker compose
+alias docker-compose="docker compose"
 EOT
 }
 
@@ -117,7 +117,7 @@ common_terraform_install() {
   mkdir -p ${TMPDIR}
   curl -vL https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_linux_amd64.zip -o ${TMPDIR}/terraform.zip
   cd /usr/local/bin
-  sudo unzip -u ${TMPDIR}/terraform.zip
+  sudo unzip -uo ${TMPDIR}/terraform.zip
   rm -rf ${TMPDIR}
 }
 
@@ -127,7 +127,7 @@ common_vault_install() {
   mkdir -p ${TMPDIR}
   curl -vL https://releases.hashicorp.com/vault/${VERSION}/vault_${VERSION}_linux_amd64.zip -o ${TMPDIR}/vault.zip
   cd /usr/local/bin
-  sudo unzip -u ${TMPDIR}/vault.zip
+  sudo unzip -uo ${TMPDIR}/vault.zip
   rm -rf ${TMPDIR}
 }
 
