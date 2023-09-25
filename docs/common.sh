@@ -277,7 +277,7 @@ common_add_ssh_pubkey() {
 }
 
 common_setup_homedir_kubectl() {
-  if [ $(grep kubectl ${HOME}/.profile) -gt 0 ]; then
+  if [ $(grep kubectl ${HOME}/.profile; echo $?) -gt 0 ]; then
     cat <<EOT >> ${HOME}/.profile
 eval "\$(kubectl completion bash)"
 alias k=kubectl
@@ -314,7 +314,7 @@ format = '[\$symbol\$context(\\(\$namespace\\))](\$style) '
 style = "blue bold"
 EOT
 
-  if [ $(grep starship ${HOME}/.profile) -gt 0 ]; then
+  if [ $(grep starship ${HOME}/.profile; echo $?) -gt 0 ]; then
     cat <<EOT >> ${HOME}/.profile
 export STARSHIP_CONFIG=\${HOME}/.starship.toml
 eval "\$(starship init bash)"
@@ -323,7 +323,7 @@ EOT
 }
 
 common_setup_homedir_direnv() {
-  if [ $(grep direnv ${HOME}/.profile) -gt 0 ]; then
+  if [ $(grep direnv ${HOME}/.profile; echo $?) -gt 0 ]; then
     cat <<EOT >> ${HOME}/.profile
 eval "\$(direnv hook bash)"
 EOT
@@ -364,7 +364,7 @@ bind -r w if "tmux display -p \"#{session_windows}\" | grep ^1\$ && tmux display
         "kill-pane"
 EOT
 
-  if [ $(grep 'hostname -s' ${HOME}/.profile) -gt 0 ]; then
+  if [ $(grep 'hostname -s' ${HOME}/.profile; echo $?) -gt 0 ]; then
     cat <<EOT >> ${HOME}/.profile
 printf "\\033k\$(hostname -s)\\033\\\\"
 EOT
