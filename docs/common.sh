@@ -206,6 +206,14 @@ common_vcc_install() {
   rm -rf ${TMPDIR}
 }
 
+common_k3s_master_install() {
+  curl -sfL https://get.k3s.io | sudo sh -s - --write-kubeconfig-mode 644
+  sudo chmod 755 /var/lib/rancher/k3s/server/cred
+  sudo chmod 755 /var/lib/rancher/k3s/server/tls
+  sudo chmod 644 /var/lib/rancher/k3s/server/tls/*
+
+  common_setup_homedir_kubectl
+}
 
 common_hoge_install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
@@ -257,12 +265,7 @@ common_install_docker() {
 }
 
 common_install_k3s_master() {
-  curl -sfL https://get.k3s.io | sudo sh -s - --write-kubeconfig-mode 644
-  sudo chmod 755 /var/lib/rancher/k3s/server/cred
-  sudo chmod 755 /var/lib/rancher/k3s/server/tls
-  sudo chmod 644 /var/lib/rancher/k3s/server/tls/*
-
-  common_setup_homedir_kubectl
+  common_k3s_master_install
 }
 
 common_add_ssh_pubkey() {

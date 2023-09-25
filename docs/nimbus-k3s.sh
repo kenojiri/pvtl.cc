@@ -23,17 +23,34 @@ set -x
 ### read common functions ###
 TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
 mkdir -p ${TMPDIR}
-curl -sk https://pvtl.cc/jbox-common.sh -o ${TMPDIR}/jbox-common.sh
-source ${TMPDIR}/jbox-common.sh
-curl -sk https://pvtl.cc/vsphere-common.sh -o ${TMPDIR}/vsphere-common.sh
-source ${TMPDIR}/vsphere-common.sh
-curl -sk https://pvtl.cc/nimbus-common.sh -o ${TMPDIR}/nimbus-common.sh
-source ${TMPDIR}/nimbus-common.sh
+curl -sk https://pvtl.cc/common.sh -o ${TMPDIR}/common.sh
+source ${TMPDIR}/common.sh
 rm -rf ${TMPDIR}
 
-prepare
-install
-common_install_k3s_master
-common_install_k8s_accessories
-setup_homedir
-conclusion
+### deb packages ###
+echo "Installing deb packages..."
+sudo apt-get update
+sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  -o Dpkg::Options::="--force-confnew" \
+  git mosh tmux jq direnv unzip groff netcat-openbsd bash-completion sshpass \
+  net-tools dnsutils ldap-utils nfs-common nfs-kernel-server \
+  apt-transport-https gnupg software-properties-common"
+
+common_starship_install
+common_yj_install
+common_mc_install
+common_pivnet_install
+common_terraform_install
+common_vault_install
+common_carvel_install
+common_krew_install
+common_helm_install
+common_velero_install
+common_stern_install
+common_k3s_master_install
+common_setup_homedir_kubectl
+common_setup_homedir_starship
+common_setup_homedir_direnv
+common_setup_homedir_tmux
+
+#
