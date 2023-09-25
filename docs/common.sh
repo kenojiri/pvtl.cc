@@ -22,7 +22,7 @@ EOT
 }
 
 common_starship_install() {
-  curl -sS https://starship.rs/install.sh | FORCE=1 sh
+  curl -sS https://starship.rs/install.sh | sudo FORCE=1 sh
 }
 
 common_yj_install() {
