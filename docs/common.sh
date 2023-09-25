@@ -210,7 +210,7 @@ common_k3s_master_install() {
   curl -sfL https://get.k3s.io | sudo sh -s - --write-kubeconfig-mode 644
   sudo chmod 755 /var/lib/rancher/k3s/server/cred
   sudo chmod 755 /var/lib/rancher/k3s/server/tls
-  sudo chmod 644 /var/lib/rancher/k3s/server/tls/*
+  sudo chmod -R go+rw /var/lib/rancher/k3s/server/tls
 
   common_setup_homedir_kubectl
 }
