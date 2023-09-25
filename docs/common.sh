@@ -30,7 +30,7 @@ common_yj_install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
   pushd ${TMPDIR}
-    curl -vL https://github.com/sclevine/yj/releases/download/${VERSION}/yj-linux -o ./yj &&\
+    curl -L https://github.com/sclevine/yj/releases/download/${VERSION}/yj-linux -o ./yj &&\
     sudo install -m 755 yj /usr/local/bin/
   popd
   rm -rf ${TMPDIR}
@@ -51,7 +51,7 @@ common_lego_install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
   pushd ${TMPDIR}
-    curl -vL https://github.com/go-acme/lego/releases/download/${VERSION}/lego_${VERSION}_linux_amd64.tar.gz -o lego.tgz
+    curl -L https://github.com/go-acme/lego/releases/download/${VERSION}/lego_${VERSION}_linux_amd64.tar.gz -o lego.tgz
     tar zxvf lego.tgz
     sudo install -m 755 lego /usr/local/bin/lego
   popd
@@ -63,7 +63,7 @@ common_bosh_cli_install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
   pushd ${TMPDIR}
-    curl -vL https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${VERSION}-linux-amd64 -o ./bosh
+    curl -L https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${VERSION}-linux-amd64 -o ./bosh
     sudo install -m 755 ./bosh /usr/local/bin/
   popd
   rm -rf ${TMPDIR}
@@ -74,7 +74,7 @@ common_om_cli_install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
   pushd ${TMPDIR}
-    curl -vL https://github.com/pivotal-cf/om/releases/download/${VERSION}/om-linux-${VERSION} -o ./om
+    curl -L https://github.com/pivotal-cf/om/releases/download/${VERSION}/om-linux-${VERSION} -o ./om
     sudo install -m 755 ./om /usr/local/bin/
   popd
   rm -rf ${TMPDIR}
@@ -85,7 +85,7 @@ common_pivnet_install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
   pushd ${TMPDIR}
-    curl -vL https://github.com/pivotal-cf/pivnet-cli/releases/download/v${VERSION}/pivnet-linux-amd64-${VERSION} -o ./pivnet
+    curl -L https://github.com/pivotal-cf/pivnet-cli/releases/download/v${VERSION}/pivnet-linux-amd64-${VERSION} -o ./pivnet
     sudo install -m 755 ./pivnet /usr/local/bin/
   popd
   rm -rf ${TMPDIR}
@@ -96,7 +96,7 @@ common_bbr_install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
   pushd ${TMPDIR}
-    curl -vL https://github.com/cloudfoundry/bosh-backup-and-restore/releases/download/v${VERSION}/bbr-${VERSION}-linux-amd64 -o ./bbr
+    curl -L https://github.com/cloudfoundry/bosh-backup-and-restore/releases/download/v${VERSION}/bbr-${VERSION}-linux-amd64 -o ./bbr
     sudo install -m 755 ./bbr /usr/local/bin/
   popd
   rm -rf ${TMPDIR}
@@ -107,7 +107,7 @@ common_credhub_install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
   pushd ${TMPDIR}
-    curl -vL https://github.com/cloudfoundry/credhub-cli/releases/download/${VERSION}/credhub-linux-${VERSION}.tgz | tar zxvf -
+    curl -L https://github.com/cloudfoundry/credhub-cli/releases/download/${VERSION}/credhub-linux-${VERSION}.tgz | tar zxvf -
     sudo install -m 755 ./credhub /usr/local/bin/
   popd
   rm -rf ${TMPDIR}
@@ -117,7 +117,7 @@ common_terraform_install() {
   VERSION=$(${CURL} -s https://api.github.com/repos/hashicorp/terraform/releases/latest | jq -r .tag_name | sed 's/v//')
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
-  curl -vL https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_linux_amd64.zip -o ${TMPDIR}/terraform.zip
+  curl -L https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_linux_amd64.zip -o ${TMPDIR}/terraform.zip
   cd /usr/local/bin
   sudo unzip -uo ${TMPDIR}/terraform.zip
   rm -rf ${TMPDIR}
@@ -127,14 +127,14 @@ common_vault_install() {
   VERSION=$(${CURL} -s https://api.github.com/repos/hashicorp/vault/releases/latest | jq -r .tag_name | sed 's/v//')
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
-  curl -vL https://releases.hashicorp.com/vault/${VERSION}/vault_${VERSION}_linux_amd64.zip -o ${TMPDIR}/vault.zip
+  curl -L https://releases.hashicorp.com/vault/${VERSION}/vault_${VERSION}_linux_amd64.zip -o ${TMPDIR}/vault.zip
   cd /usr/local/bin
   sudo unzip -uo ${TMPDIR}/vault.zip
   rm -rf ${TMPDIR}
 }
 
 common_carvel_install() {
-  curl -vL https://carvel.dev/install.sh | sudo bash
+  curl -L https://carvel.dev/install.sh | sudo bash
 }
 
 common_krew_install() {
@@ -154,7 +154,7 @@ common_helm_install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
   pushd ${TMPDIR}
-    curl -vL https://get.helm.sh/helm-${VERSION}-linux-amd64.tar.gz -o helm.tgz
+    curl -L https://get.helm.sh/helm-${VERSION}-linux-amd64.tar.gz -o helm.tgz
     tar zxvf helm.tgz linux-amd64/
     sudo install -m 755 linux-amd64/helm /usr/local/bin/helm
   popd
@@ -166,7 +166,7 @@ common_velero_install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
   pushd ${TMPDIR}
-    curl -vL https://github.com/vmware-tanzu/velero/releases/download/${VERSION}/velero-${VERSION}-linux-amd64.tar.gz -o velero.tgz
+    curl -L https://github.com/vmware-tanzu/velero/releases/download/${VERSION}/velero-${VERSION}-linux-amd64.tar.gz -o velero.tgz
     tar zxvf velero.tgz
     sudo install -m 755 velero-*/velero /usr/local/bin/velero
   popd
@@ -178,7 +178,7 @@ common_stern_install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
   pushd ${TMPDIR}
-    curl -vL https://github.com/stern/stern/releases/download/v${VERSION}/stern_${VERSION}_linux_amd64.tar.gz -o stern.tgz
+    curl -L https://github.com/stern/stern/releases/download/v${VERSION}/stern_${VERSION}_linux_amd64.tar.gz -o stern.tgz
     tar zxvf stern.tgz stern
     sudo install -m 755 stern /usr/local/bin/
   popd
@@ -202,7 +202,7 @@ common_vcc_install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
   pushd ${TMPDIR}
-    curl -vL https://github.com/vmware-labs/vmware-customer-connect-cli/releases/download/${VERSION}/vcc-linux-${VERSION} -o ./vcc
+    curl -L https://github.com/vmware-labs/vmware-customer-connect-cli/releases/download/${VERSION}/vcc-linux-${VERSION} -o ./vcc
     sudo install -m 755 ./vcc /usr/local/bin/
   popd
   rm -rf ${TMPDIR}
@@ -279,7 +279,7 @@ common_add_ssh_pubkey() {
 }
 
 common_setup_homedir_kubectl() {
-  if [ $(grep kubectl ${HOME}/.profile; echo $?) -gt 0 ]; then
+  if [ $(grep kubectl ${HOME}/.profile > /dev/null ; echo $?) -gt 0 ]; then
     cat <<EOT >> ${HOME}/.profile
 eval "\$(kubectl completion bash)"
 alias k=kubectl
@@ -316,7 +316,7 @@ format = '[\$symbol\$context(\\(\$namespace\\))](\$style) '
 style = "blue bold"
 EOT
 
-  if [ $(grep starship ${HOME}/.profile; echo $?) -gt 0 ]; then
+  if [ $(grep starship ${HOME}/.profile > /dev/null ; echo $?) -gt 0 ]; then
     cat <<EOT >> ${HOME}/.profile
 export STARSHIP_CONFIG=\${HOME}/.starship.toml
 eval "\$(starship init bash)"
@@ -325,7 +325,7 @@ EOT
 }
 
 common_setup_homedir_direnv() {
-  if [ $(grep direnv ${HOME}/.profile; echo $?) -gt 0 ]; then
+  if [ $(grep direnv ${HOME}/.profile > /dev/null ; echo $?) -gt 0 ]; then
     cat <<EOT >> ${HOME}/.profile
 eval "\$(direnv hook bash)"
 EOT
@@ -366,7 +366,7 @@ bind -r w if "tmux display -p \"#{session_windows}\" | grep ^1\$ && tmux display
         "kill-pane"
 EOT
 
-  if [ $(grep 'hostname -s' ${HOME}/.profile; echo $?) -gt 0 ]; then
+  if [ $(grep 'hostname -s' ${HOME}/.profile > /dev/null; echo $?) -gt 0 ]; then
     cat <<EOT >> ${HOME}/.profile
 printf "\\033k\$(hostname -s)\\033\\\\"
 EOT
