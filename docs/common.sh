@@ -12,15 +12,17 @@ else
 fi
 
 common_docker_install() {
-  curl -sSL https://get.docker.com/ | sudo sh
-  sudo usermod -aG docker $(id -un)
-  cat <<EOT >> ${HOME}/.profile
+  if [ ! -f /usr/bin/docker ]; then
+    curl -sSL https://get.docker.com/ | sudo sh
+    sudo usermod -aG docker $(id -un)
+    cat <<EOT >> ${HOME}/.profile
 alias docker-compose="docker compose"
 EOT
+  fi
 }
 
 common_starship_install() {
-  curl -sS https://starship.rs/install.sh | sh
+  curl -sS https://starship.rs/install.sh | FORCE=1 sh
 }
 
 common_yj_install() {
