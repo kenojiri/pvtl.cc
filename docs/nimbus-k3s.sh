@@ -33,7 +33,7 @@ sudo apt-get update
 sudo sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y \
   -o Dpkg::Options::="--force-confnew" \
   git mosh tmux jq direnv unzip groff netcat-openbsd bash-completion sshpass \
-  net-tools dnsutils ldap-utils nfs-common nfs-kernel-server \
+  net-tools dnsutils ipcalc ldap-utils nfs-common nfs-kernel-server \
   apt-transport-https gnupg software-properties-common"
 
 common_starship_install
