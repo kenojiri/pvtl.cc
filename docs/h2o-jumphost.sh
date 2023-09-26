@@ -15,12 +15,23 @@ fi
 
 set -x
 
+### fix /etc/hosts for sudo ###
+NEW_HOSTNAME=$(hostname -s)
+cat << EOF | sudo tee /etc/hosts
+127.0.0.1       localhost
+127.0.1.1       ${NEW_HOSTNAME}
+EOF
+
 ### read common functions ###
 TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
 mkdir -p ${TMPDIR}
 curl -sk https://pvtl.cc/common.sh -o ${TMPDIR}/common.sh
 source ${TMPDIR}/common.sh
 rm -rf ${TMPDIR}
+
+### stop & disable systemd-resolved for dnsmasq ###
+sudo systemctl stop systemd-resolved
+sudo systemctl disable systemd-resolved
 
 ### deb packages ###
 echo "Installing deb packages..."
