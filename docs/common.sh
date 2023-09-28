@@ -190,9 +190,9 @@ common_govc_install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
   pushd ${TMPDIR}
-    curl -LO https://github.com/vmware/govmomi/releases/download/${VERSION}/govc_linux_amd64.gz
-    gunzip govc_linux_amd64.gz
-    sudo install -m 755 ./govc_linux_amd64 /usr/local/bin/govc
+    curl -LO https://github.com/vmware/govmomi/releases/download/${VERSION}/govc_Linux_x86_64.tar.gz
+    tar zxvf govc_Linux_x86_64.tar.gz govc
+    sudo install -m 755 ./govc /usr/local/bin/
   popd
   rm -rf ${TMPDIR}
 }
