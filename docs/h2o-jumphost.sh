@@ -29,10 +29,6 @@ curl -sk https://pvtl.cc/common.sh -o ${TMPDIR}/common.sh
 source ${TMPDIR}/common.sh
 rm -rf ${TMPDIR}
 
-### stop & disable systemd-resolved for dnsmasq ###
-sudo systemctl stop systemd-resolved
-sudo systemctl disable systemd-resolved
-
 ### deb packages ###
 echo "Installing deb packages..."
 sudo apt-get update
