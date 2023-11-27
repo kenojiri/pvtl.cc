@@ -30,7 +30,7 @@ common_yj_install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
   pushd ${TMPDIR}
-    curl -L https://github.com/sclevine/yj/releases/download/${VERSION}/yj-linux -o ./yj &&\
+    curl -L https://github.com/sclevine/yj/releases/download/${VERSION}/yj-linux-amd64 -o ./yj &&\
     sudo install -m 755 yj /usr/local/bin/
   popd
   rm -rf ${TMPDIR}
