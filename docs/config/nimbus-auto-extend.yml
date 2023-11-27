@@ -1,0 +1,9 @@
+vm:
+- kojiri-worker-01
+- kojiri-jpfip-01
+- kojiri-jpfip-02
+- kojiri-jpfip-03
+- kojiri-jpfip-04
+- kojiri-1-ubuntu-gw
+- kojiri-1-vc
+- kojiri-1-esxi
