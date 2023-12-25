@@ -208,6 +208,18 @@ common_vcc_install() {
   rm -rf ${TMPDIR}
 }
 
+common_flarectl_install() {
+  VERSION=$(${CURL} -s https://api.github.com/repos/cloudflare/cloudflare-go/releases/latest | jq -r .tag_name | sed 's/v//')
+  TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+  mkdir -p ${TMPDIR}
+  pushd ${TMPDIR}
+    curl -LO https://github.com/cloudflare/cloudflare-go/releases/download/v${VERSION}/flarectl_${VERSION}_linux_amd64.tar.gz
+    tar zxvf flarectl_${VERSION}_linux_amd64.tar.gz flarectl
+    sudo install -m 755 ./flarectl /usr/local/bin/
+  popd
+  rm -rf ${TMPDIR}
+}
+
 common_k3s_master_install() {
   curl -sfL https://get.k3s.io | sudo sh -s - --write-kubeconfig-mode 644
   sudo chmod 755 /var/lib/rancher/k3s/server/cred

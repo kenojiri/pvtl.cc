@@ -42,6 +42,9 @@ common_krew_install
 common_helm_install
 common_velero_install
 common_stern_install
+common_govc_install
+common_vcc_install
+common_flarectl_install
 common_setup_homedir_kubectl
 common_setup_homedir_starship
 common_setup_homedir_direnv
