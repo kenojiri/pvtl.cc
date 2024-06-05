@@ -74,7 +74,7 @@ common_om_cli_install() {
   TMPDIR=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   mkdir -p ${TMPDIR}
   pushd ${TMPDIR}
-    curl -L https://github.com/pivotal-cf/om/releases/download/${VERSION}/om-linux-${VERSION} -o ./om
+    curl -L https://github.com/pivotal-cf/om/releases/download/${VERSION}/om-linux-amd64-${VERSION} -o ./om
     sudo install -m 755 ./om /usr/local/bin/
   popd
   rm -rf ${TMPDIR}
