@@ -1,7 +1,6 @@
 vm:
 - kojiri-worker-01
 - kojiri-ubudesk-01
-- kojiri-jpfip-01
 - kojiri-1-ubuntu-gw
 - kojiri-1-vc
 - kojiri-1-esxi
