@@ -2,5 +2,6 @@ vm:
 - kojiri-worker-01
 - kojiri-ubudesk-01
 - kojiri-1-ubuntu-gw
-- kojiri-1-vc
-- kojiri-1-esxi
+- kojiri-1-vc8
+- kojiri-1-esxi8-1
+- kojiri-1-esxi8-2
