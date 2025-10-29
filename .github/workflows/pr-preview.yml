@@ -20,3 +20,4 @@ jobs:
       - name: run kubectl
         run: |
           kubectl version
+          ls -laR
