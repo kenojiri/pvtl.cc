@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy-preview:
-    runs-on: self-hosted
+    runs-on: pvtlcc-preview-arc-runner-set
 
     steps:
       - name: Checkout code
